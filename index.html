@@ -6,23 +6,33 @@
   <title>OxieBook</title>
   <style>
     body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 20px; }
-    .container { max-width: 500px; margin: 0 auto; }
-    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
+   .container { max-width: 500px; margin: 0 auto; }
+   .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
     h2 { text-align: center; color: #1877f2; margin: 0 0 15px 0; }
     input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: Arial; }
     button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
     button:hover { background: #166fe5; }
-    .link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
-    .error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .post { border-bottom: 1px solid #eee; padding: 15px 0; }
-    .post:last-child { border-bottom: none; }
-    .post-name { font-weight: bold; color: #050505; font-size: 15px; display: flex; align-items: center; gap: 4px; }
-    .post-content { margin: 8px 0; color: #050505; }
-    .post-time { color: #65676b; font-size: 12px; }
-    .verified { color: #1877f2; font-size: 16px; }
-    .search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
-    .search-result:hover { background: #f0f2f5; }
+   .btn-small { width: auto; padding: 6px 12px; font-size: 14px; margin: 0; }
+   .btn-like { background: #e4e6eb; color: #050505; }
+   .btn-liked { background: #1877f2; color: white; }
+   .link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
+   .error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
+   .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+   .post { border-bottom: 1px solid #eee; padding: 15px 0; }
+   .post:last-child { border-bottom: none; }
+   .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+   .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ddd; }
+   .post-name { font-weight: bold; color: #050505; font-size: 15px; display: flex; align-items: center; gap: 4px; }
+   .post-content { margin: 8px 0; color: #050505; }
+   .post-time { color: #65676b; font-size: 12px; }
+   .post-actions { display: flex; gap: 10px; margin-top: 10px; }
+   .verified { color: #1877f2; font-size: 16px; }
+   .search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+   .search-result:hover { background: #f0f2f5; }
+   .profile-section { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+   .profile-section input { margin: 0; }
+   .bio { color: #65676b; font-size: 14px; margin: 5px 0; }
+    #fileInput { display: none; }
   </style>
 </head>
 <body>
@@ -42,13 +52,26 @@
       <div class="card">
         <div class="header">
           <h2>OxieBook</h2>
-          <button id="logoutBtn" style="width: auto; padding: 8px 16px;">Logout</button>
+          <button id="logoutBtn" class="btn-small">Logout</button>
         </div>
-        <p>Welcome, <span id="userName"></span></p>
-        
-        <input type="text" id="searchInput" placeholder="Dost ka naam search karo..." />
+
+        <div class="profile-section">
+          <img id="userAvatar" class="avatar" src="https://via.placeholder.com/40" />
+          <div style="flex: 1;">
+            <div id="userName" style="font-weight: bold;"></div>
+            <div id="userBio" class="bio"></div>
+          </div>
+        </div>
+
+        <input type="text" id="nameInput" placeholder="Naam badlo" />
+        <input type="text" id="bioInput" placeholder="Bio likho" />
+        <input type="file" id="fileInput" accept="image/*" />
+        <button id="dpBtn" class="btn-small">DP Upload</button>
+        <button id="saveProfileBtn">Profile Save Karo</button>
+
+        <input type="text" id="searchInput" placeholder="Dost ka naam search karo..." style="margin-top: 15px;" />
         <div id="searchResults"></div>
-        
+
         <textarea id="postContent" placeholder="Kya soch rahe ho?" rows="3"></textarea>
         <button id="postBtn">Post Karo</button>
       </div>
@@ -67,143 +90,157 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_iM23kcEkexqxSfRP8p-hvw_jzrtv5hI'
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-    const emailInput = document.getElementById('email')
-    const passwordInput = document.getElementById('password')
-    const loginBtn = document.getElementById('loginBtn')
-    const toggleBtn = document.getElementById('toggleBtn')
-    const errorDiv = document.getElementById('error')
-    const authForm = document.getElementById('auth-form')
-    const homeDiv = document.getElementById('home')
-    const userName = document.getElementById('userName')
-    const logoutBtn = document.getElementById('logoutBtn')
-    const postBtn = document.getElementById('postBtn')
-    const postContent = document.getElementById('postContent')
-    const postsDiv = document.getElementById('posts')
-    const searchInput = document.getElementById('searchInput')
-    const searchResults = document.getElementById('searchResults')
-
     let isLogin = true
     let currentUser = null
 
-    // Toggle Login/Signup
-    toggleBtn.addEventListener('click', () => {
-      isLogin = !isLogin
-      loginBtn.textContent = isLogin ? 'Log In' : 'Sign Up'
-      toggleBtn.textContent = isLogin ? 'Naya account banaye' : 'Account hai? Login kare'
-      errorDiv.textContent = ''
+    // Auth
+    document.getElementById('toggleBtn').addEventListener('click', () => {
+      isLogin =!isLogin
+      document.getElementById('loginBtn').textContent = isLogin? 'Log In' : 'Sign Up'
+      document.getElementById('toggleBtn').textContent = isLogin? 'Naya account banaye' : 'Account hai? Login kare'
     })
 
-    // Login/Signup
-    loginBtn.addEventListener('click', async () => {
-      const email = emailInput.value
-      const password = passwordInput.value
-      errorDiv.textContent = ''
-      if (!email || !password) return errorDiv.textContent = 'Email aur Password daal'
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+      const email = document.getElementById('email').value
+      const password = document.getElementById('password').value
+      if (!email ||!password) return document.getElementById('error').textContent = 'Email aur Password daal'
 
       try {
-        let result = isLogin 
-          ? await supabase.auth.signInWithPassword({ email, password })
+        let result = isLogin
+         ? await supabase.auth.signInWithPassword({ email, password })
           : await supabase.auth.signUp({ email, password })
 
         if (result.error) throw result.error
-        if (!isLogin && !result.data.session) {
-          errorDiv.textContent = 'Signup ho gaya! Ab Login kar'
-          isLogin = true
-          loginBtn.textContent = 'Log In'
-          toggleBtn.textContent = 'Naya account banaye'
-        }
+        if (!isLogin &&!result.data.session) document.getElementById('error').textContent = 'Signup ho gaya! Ab Login kar'
       } catch (err) {
-        errorDiv.textContent = err.message
+        document.getElementById('error').textContent = err.message
       }
     })
 
-    logoutBtn.addEventListener('click', async () => await supabase.auth.signOut())
+    document.getElementById('logoutBtn').addEventListener('click', async () => await supabase.auth.signOut())
 
-    // Create Post
-    postBtn.addEventListener('click', async () => {
-      const content = postContent.value.trim()
-      if (!content) return
-      
-      const { error } = await supabase.from('posts').insert({ content })
+    // Profile Update
+    document.getElementById('dpBtn').addEventListener('click', () => document.getElementById('fileInput').click())
+
+    document.getElementById('fileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0]
+      if (!file) return
+      const { data: { user } } = await supabase.auth.getUser()
+      const filePath = `${user.id}/${Date.now()}.jpg`
+      const { error } = await supabase.storage.from('avatars').upload(filePath, file)
+      if (error) return alert(error.message)
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath)
+      await supabase.from('profiles').update({ avatar_url: data.publicUrl }).eq('id', user.id)
+      getProfile()
+    })
+
+    document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+      const name = document.getElementById('nameInput').value.trim()
+      const bio = document.getElementById('bioInput').value.trim()
+      const { data: { user } } = await supabase.auth.getUser()
+      const { error } = await supabase.from('profiles').update({ name, bio }).eq('id', user.id)
       if (error) alert(error.message)
       else {
-        postContent.value = ''
+        alert('Profile update ho gaya!')
+        getProfile()
         loadPosts()
       }
     })
 
-    // Search Users
-    searchInput.addEventListener('input', async (e) => {
-      const query = e.target.value.trim()
-      if (query.length < 2) {
-        searchResults.innerHTML = ''
-        return
+    // Post
+    document.getElementById('postBtn').addEventListener('click', async () => {
+      const content = document.getElementById('postContent').value.trim()
+      if (!content) return
+      const { error } = await supabase.from('posts').insert({ content })
+      if (error) alert(error.message)
+      else {
+        document.getElementById('postContent').value = ''
+        loadPosts()
       }
-      
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('name, is_verified')
-        .ilike('name', `%${query}%`)
-        .limit(5)
-      
-      if (error) return
-      
-      searchResults.innerHTML = data.map(user => `
-        <div class="search-result">
-          ${user.name} ${user.is_verified ? '<span class="verified">✓</span>' : ''}
-        </div>
-      `).join('') || '<div class="search-result">Koi nahi mila</div>'
     })
 
-    // Load Posts with Names + Verified Badge
-    async function loadPosts() {
-      const { data, error } = await supabase
-        .from('posts')
-        .select(`
-          *,
-          profiles!posts_user_id_fkey (name, is_verified)
-        `)
-        .order('created_at', { ascending: false })
-      
-      if (error) return console.log(error)
-      
-      postsDiv.innerHTML = data.map(post => `
-        <div class="post">
-          <div class="post-name">
-            ${post.profiles?.name || post.user_email}
-            ${post.profiles?.is_verified ? '<span class="verified">✓</span>' : ''}
-          </div>
-          <div class="post-content">${post.content}</div>
-          <div class="post-time">${new Date(post.created_at).toLocaleString('hi-IN')}</div>
+    // Search
+    document.getElementById('searchInput').addEventListener('input', async (e) => {
+      const query = e.target.value.trim()
+      if (query.length < 2) return document.getElementById('searchResults').innerHTML = ''
+      const { data } = await supabase.from('profiles').select('name, is_verified, avatar_url').ilike('name', `%${query}%`).limit(5)
+      document.getElementById('searchResults').innerHTML = data.map(u => `
+        <div class="search-result">
+          <img src="${u.avatar_url || 'https://via.placeholder.com/40'}" class="avatar" style="width:30px;height:30px;" />
+          ${u.name} ${u.is_verified? '<span class="verified">✓</span>' : ''}
         </div>
-      `).join('') || '<p>Abhi koi post nahi hai. Pehla post tu kar!</p>'
+      `).join('')
+    })
+
+    // Like Post
+    async function toggleLike(postId, liked) {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (liked) {
+        await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', user.id)
+      } else {
+        await supabase.from('likes').insert({ post_id: postId, user_id: user.id })
+      }
+      loadPosts()
+    }
+    window.toggleLike = toggleLike
+
+    // Load Posts with Likes
+    async function loadPosts() {
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data } = await supabase
+       .from('posts')
+       .select(`*, profiles!posts_user_id_fkey (name, is_verified, avatar_url), likes (user_id)`)
+       .order('created_at', { ascending: false })
+
+      document.getElementById('posts').innerHTML = data.map(post => {
+        const likesCount = post.likes.length
+        const userLiked = post.likes.some(l => l.user_id === user?.id)
+        return `
+          <div class="post">
+            <div class="post-header">
+              <img src="${post.profiles?.avatar_url || 'https://via.placeholder.com/40'}" class="avatar" />
+              <div>
+                <div class="post-name">
+                  ${post.profiles?.name || post.user_email}
+                  ${post.profiles?.is_verified? '<span class="verified">✓</span>' : ''}
+                </div>
+                <div class="post-time">${new Date(post.created_at).toLocaleString('hi-IN')}</div>
+              </div>
+            </div>
+            <div class="post-content">${post.content}</div>
+            <div class="post-actions">
+              <button class="btn-small ${userLiked? 'btn-liked' : 'btn-like'}" onclick="toggleLike(${post.id}, ${userLiked})">
+                👍 Like ${likesCount > 0? `(${likesCount})` : ''}
+              </button>
+            </div>
+          </div>
+        `
+      }).join('') || '<p>Abhi koi post nahi hai.</p>'
     }
 
-    // Get Current User Profile
+    // Get Profile
     async function getProfile() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
-      
-      const { data } = await supabase
-        .from('profiles')
-        .select('name, is_verified')
-        .eq('id', user.id)
-        .single()
-      
+      const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
       currentUser = data
-      userName.innerHTML = `${data.name} ${data.is_verified ? '<span class="verified">✓</span>' : ''}`
+      document.getElementById('userName').innerHTML = `${data.name} ${data.is_verified? '<span class="verified">✓</span>' : ''}`
+      document.getElementById('userBio').textContent = data.bio || 'Bio add karo'
+      document.getElementById('userAvatar').src = data.avatar_url || 'https://via.placeholder.com/40'
+      document.getElementById('nameInput').value = data.name || ''
+      document.getElementById('bioInput').value = data.bio || ''
     }
 
     // Auth State
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
-        authForm.style.display = 'none'
-        homeDiv.style.display = 'block'
+        document.getElementById('auth-form').style.display = 'none'
+        document.getElementById('home').style.display = 'block'
         getProfile()
         loadPosts()
       } else {
-        authForm.style.display = 'block'
-        homeDiv.style.display = 'none'
+        document.getElementById('auth-form').style.display = 'block'
+        document.getElementById('home').style.display = 'none'
       }
     })
   </script>
