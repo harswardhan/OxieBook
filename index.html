@@ -3,26 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OxieBook - Log in or Sign up</title>
+  <title>OxieBook - log in or sign up</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body {font-family: Arial; background: #f0f2f5; margin: 0;}
-    .container {display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;}
-    .left {margin-right: 60px;}
-    .logo {color: #1877f2; font-size: 56px; font-weight: bold; margin: 0;}
-    .tagline {font-size: 24px; width: 400px;}
-    .login-box {background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 396px;}
-    input {width: 100%; padding: 14px; margin: 6px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 17px; box-sizing: border-box;}
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {font-family: Helvetica, Arial, sans-serif; background: #f0f2f5;}
+    .main {display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; gap: 60px; flex-wrap: wrap;}
+    .left {max-width: 500px;}
+    .logo {color: #1877f2; font-size: 56px; font-weight: bold; margin-bottom: 10px;}
+    .tagline {font-size: 28px; line-height: 32px;}
+    .login-box {background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1); width: 396px;}
+    input {width: 100%; padding: 14px 16px; margin: 6px 0; border: 1px solid #dddfe2; border-radius: 6px; font-size: 17px;}
+    input:focus {outline: none; border-color: #1877f2;}
     button {width: 100%; padding: 14px; border: none; border-radius: 6px; font-size: 20px; font-weight: bold; cursor: pointer; margin: 6px 0;}
     .login-btn {background: #1877f2; color: white;}
-    .create-btn {background: #42b72a; color: white; width: auto; padding: 14px 16px; margin: 20px auto; display: block;}
-    .forgot {display: block; text-align: center; color: #1877f2; margin: 16px 0; text-decoration: none; cursor: pointer;}
-    hr {margin: 20px 0; border: none; border-top: 1px solid #ddd;}
-    .modal {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;}
+    .login-btn:hover {background: #166fe5;}
+    .create-btn {background: #42b72a; color: white; width: auto; padding: 14px 16px; margin: 20px auto; display: block; font-size: 17px;}
+    .create-btn:hover {background: #36a420;}
+    .forgot {display: block; text-align: center; color: #1877f2; margin: 16px 0; text-decoration: none; font-size: 14px; cursor: pointer;}
+    .forgot:hover {text-decoration: underline;}
+    hr {margin: 20px 0; border: none; border-top: 1px solid #dadde1;}
+    .modal {display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); align-items: center; justify-content: center; z-index: 100;}
+    .modal-box {background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 432px; position: relative;}
+    .modal-box h2 {font-size: 32px; margin-bottom: 14px;}
+    .close {position: absolute; right: 16px; top: 12px; font-size: 24px; cursor: pointer; color: #606770;}
+    @media (max-width: 900px) {
+      .main {flex-direction: column; gap: 20px; text-align: center;}
+      .tagline {font-size: 24px;}
+      .login-box {width: 100%; max-width: 396px;}
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="main">
     <div class="left">
       <h1 class="logo">OxieBook</h1>
       <p class="tagline">OxieBook aapko doston aur parivar se jodta hai.</p>
@@ -39,24 +52,27 @@
 
   <!-- Signup Modal -->
   <div id="signupModal" class="modal">
-    <div class="login-box">
+    <div class="modal-box">
+      <span class="close" onclick="hideSignup()">&times;</span>
       <h2>Sign Up</h2>
+      <p style="color:#606770; margin-bottom:16px;">Ye aasan aur tez hai.</p>
+      <hr>
       <input type="text" id="name" placeholder="Poora naam">
       <input type="text" id="email" placeholder="Email">
       <input type="password" id="pass" placeholder="Naya password">
-      <button class="create-btn" onclick="signup()">Sign Up</button>
-      <button onclick="hideSignup()" style="background:#e4e6eb; color:#000;">Cancel</button>
+      <button class="create-btn" style="width:100%;" onclick="signup()">Sign Up</button>
     </div>
   </div>
 
   <!-- Forgot Password Modal -->
   <div id="forgotModal" class="modal">
-    <div class="login-box">
+    <div class="modal-box">
+      <span class="close" onclick="hideForgot()">&times;</span>
       <h2>Password Reset</h2>
-      <p>Apna email daalo. Reset link bhejenge.</p>
+      <p style="color:#606770; margin-bottom:16px;">Apna email daalo. Reset link bhejenge.</p>
+      <hr>
       <input type="text" id="forgotEmail" placeholder="Email">
       <button class="login-btn" onclick="resetPassword()">Reset Link Bhejo</button>
-      <button onclick="hideForgot()" style="background:#e4e6eb; color:#000;">Cancel</button>
     </div>
   </div>
 
@@ -92,7 +108,7 @@ async function login() {
   const email = document.getElementById('loginEmail').value
   const password = document.getElementById('loginPass').value
   const { error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) alert('Error: ' + error.message)
+  if (error) alert('Galat email ya password')
   else window.location.href = '/feed.html'
 }
 
@@ -105,10 +121,15 @@ async function resetPassword() {
   })
   if (error) alert('Error: ' + error.message)
   else {
-    alert('Reset link email pe bhej diya! Check kar')
+    alert('Reset link email pe bhej diya! Inbox/Spam check kar')
     hideForgot()
   }
 }
+
+// Agar user logged in hai to feed pe bhej do
+supabase.auth.onAuthStateChange((event, session) => {
+  if (session) window.location.href = '/feed.html'
+})
 </script>
 </body>
 </html>
