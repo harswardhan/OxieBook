@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OxieBook - Admin</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="navbar">
+    <h1 class="logo">OxieBook Admin</h1>
+    <a href="feed.html">Feed pe jao</a>
+  </div>
+  <div class="feed-container">
+    <h2>Pending Users</h2>
+    <div id="userList"></div>
+  </div>
+<script>
+  const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_iM23kcEkexqxSfRP8p-hvw_jzrtv5hI'
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  async function loadUsers() {
+    const { data: users } = await supabase.from('users').select('*').eq('verified', false)
+    const userList = document.getElementById('userList')
+    userList.innerHTML = ''
+    if(users.length === 0) userList.innerHTML = '<p>Koi pending user nahi hai</p>'
+    users.forEach(user => {
+      userList.innerHTML += `
+        <div class="post-card">
+          <h4>${user.name}</h4>
+          <p>${user.email}</p>
+          <button onclick="approveUser('${user.id}')" class="login-btn">Approve Karo</button>
+        </div>
+      `
+    })
+  }
+
+  async function approveUser(userId) {
+    await supabase.from('users').update({ verified: true }).eq('id', userId)
+    alert('User approved!')
+    loadUsers()
+  }
+  window.onload = loadUsers
+</script>
+</body>
+</html>

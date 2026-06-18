@@ -1,0 +1,60 @@
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_iM23kcEkexqxSfRP8p-hvw_jzrtv5hI'
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  
+  let currentUser = null
+  
+  window.onload = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return window.location.href = 'index.html'
+    currentUser = user
+    loadPosts()
+  }
+  
+  async function loadPosts() {
+    const { data: posts } = await supabase
+      .from('posts')
+      .select('*, users(name, verified)')
+      .order('created_at', { ascending: false })
+    
+    const postsList = document.getElementById('postsList')
+    postsList.innerHTML = ''
+    
+    posts.forEach(post => {
+      const verifiedTag = post.users.verified ? '<span class="verified">✓</span>' : ''
+      postsList.innerHTML += `
+        <div class="post-card">
+          <div class="post-header">
+            <img src="https://i.pravatar.cc/40?u=${post.user_id}" class="avatar-small">
+            <div>
+              <h4>${post.users.name} ${verifiedTag}</h4>
+              <p class="post-time">${new Date(post.created_at).toLocaleString('hi-IN')}</p>
+            </div>
+          </div>
+          <p class="post-text">${post.content}</p>
+          <div class="post-stats"><span>👍 ${post.likes} likes</span></div>
+          <hr>
+          <div class="post-buttons">
+            <button onclick="likePost('${post.id}')">👍 Like</button>
+            <button>💬 Comment</button>
+          </div>
+        </div>
+      `
+    })
+  }
+  
+  async function createPost() {
+    const text = document.getElementById('postInput').value.trim()
+    if (!text) return alert('Kuch likho bhai')
+    await supabase.from('posts').insert([{ user_id: currentUser.id, content: text }])
+    document.getElementById('postInput').value = ''
+    loadPosts()
+  }
+  
+  async function likePost(postId) {
+    await supabase.rpc('increment_likes', { row_id: postId })
+    loadPosts()
+  }
+</script>

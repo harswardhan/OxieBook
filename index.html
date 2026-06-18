@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OxieBook - Log in or Sign up</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="left-section">
+      <h1 class="logo">OxieBook</h1>
+      <p class="tagline">OxieBook aapko doston aur parivar se jodta hai.</p>
+    </div>
+    <div class="right-section">
+      <div class="login-box">
+        <form id="loginForm">
+          <input type="email" id="email" placeholder="Email" required>
+          <input type="password" id="password" placeholder="Password" required>
+          <button type="submit" class="login-btn">Log In</button>
+          <a href="#" class="forgot" onclick="alert('Abhi ye feature nahi hai bhai')">Password bhul gaye?</a>
+          <hr>
+          <a href="#" class="create-btn" onclick="showSignup()">Naya account banaye</a>
+        </form>
+        <form id="signupForm" style="display:none;">
+          <input type="text" id="signupName" placeholder="Naam" required>
+          <input type="email" id="signupEmail" placeholder="Email" required>
+          <input type="password" id="signupPass" placeholder="Password" required>
+          <button type="submit" class="login-btn" style="background:#42b72a;">Sign Up</button>
+          <a href="#" class="forgot" onclick="showLogin()">Wapas Login pe jao</a>
+        </form>
+      </div>
+    </div>
+  </div>
+<script>
+  const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
+  const SUPABASE_KEY = 'sb_publishable_iM23kcEkexqxSfRP8p-hvw_jzrtv5hI'
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const email = document.getElementById('email').value
+    const password = document.getElementById('password').value
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) return alert('Galat email ya password: ' + error.message)
+    
+    const { data: userData } = await supabase.from('users').select('verified').eq('id', data.user.id).single()
+    if (!userData || !userData.verified) {
+      await supabase.auth.signOut()
+      return alert('Admin ne abhi approve nahi kiya bhai. Wait karo.')
+    }
+    window.location.href = 'feed.html'
+  })
+
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const name = document.getElementById('signupName').value
+    const email = document.getElementById('signupEmail').value
+    const password = document.getElementById('signupPass').value
+    
+    const { data, error } = await supabase.auth.signUp({ email, password })
+    if (error) return alert('Error: ' + error.message)
+    
+    await supabase.from('users').insert([{ id: data.user.id, email: email, name: name }])
+    alert('Account ban gaya! Admin approve karega tab login kar payega')
+    showLogin()
+  })
+
+  function showSignup() {
+    document.getElementById('loginForm').style.display = 'none'
+    document.getElementById('signupForm').style.display = 'block'
+  }
+  function showLogin() {
+    document.getElementById('signupForm').style.display = 'none'
+    document.getElementById('loginForm').style.display = 'block'
+  }
+</script>
+</body>
+</html>
