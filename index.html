@@ -3,42 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OxieBook - Login</title>
+  <title>OxieBook</title>
   <style>
-    body { font-family: Arial; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f2f5; margin: 0; }
-    .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 320px; }
-    h2 { text-align: center; color: #1877f2; }
-    input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+    body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 20px; }
+    .container { max-width: 500px; margin: 0 auto; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
+    h2 { text-align: center; color: #1877f2; margin: 0 0 15px 0; }
+    input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: Arial; }
     button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
     button:hover { background: #166fe5; }
     .link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
     .error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .post { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .post:last-child { border-bottom: none; }
+    .post-name { font-weight: bold; color: #050505; font-size: 15px; display: flex; align-items: center; gap: 4px; }
+    .post-content { margin: 8px 0; color: #050505; }
+    .post-time { color: #65676b; font-size: 12px; }
+    .verified { color: #1877f2; font-size: 16px; }
+    .search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .search-result:hover { background: #f0f2f5; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>OxieBook</h2>
-    <div id="auth-form">
+    <!-- Login/Signup -->
+    <div class="card" id="auth-form">
+      <h2>OxieBook</h2>
       <input type="email" id="email" placeholder="Email" />
       <input type="password" id="password" placeholder="Password" />
       <button id="loginBtn">Log In</button>
       <div class="link" id="toggleBtn">Naya account banaye</div>
       <div class="error" id="error"></div>
     </div>
+
+    <!-- Home Feed -->
     <div id="home" style="display: none;">
-      <h3>Welcome!</h3>
-      <p id="userEmail"></p>
-      <button id="logoutBtn">Logout</button>
+      <div class="card">
+        <div class="header">
+          <h2>OxieBook</h2>
+          <button id="logoutBtn" style="width: auto; padding: 8px 16px;">Logout</button>
+        </div>
+        <p>Welcome, <span id="userName"></span></p>
+        
+        <input type="text" id="searchInput" placeholder="Dost ka naam search karo..." />
+        <div id="searchResults"></div>
+        
+        <textarea id="postContent" placeholder="Kya soch rahe ho?" rows="3"></textarea>
+        <button id="postBtn">Post Karo</button>
+      </div>
+
+      <div class="card">
+        <h3>Feed</h3>
+        <div id="posts"></div>
+      </div>
     </div>
   </div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-    // Tera Supabase Config
     const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
     const SUPABASE_ANON_KEY = 'sb_publishable_iM23kcEkexqxSfRP8p-hvw_jzrtv5hI'
-    
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
     const emailInput = document.getElementById('email')
@@ -48,10 +74,16 @@
     const errorDiv = document.getElementById('error')
     const authForm = document.getElementById('auth-form')
     const homeDiv = document.getElementById('home')
-    const userEmail = document.getElementById('userEmail')
+    const userName = document.getElementById('userName')
     const logoutBtn = document.getElementById('logoutBtn')
+    const postBtn = document.getElementById('postBtn')
+    const postContent = document.getElementById('postContent')
+    const postsDiv = document.getElementById('posts')
+    const searchInput = document.getElementById('searchInput')
+    const searchResults = document.getElementById('searchResults')
 
     let isLogin = true
+    let currentUser = null
 
     // Toggle Login/Signup
     toggleBtn.addEventListener('click', () => {
@@ -61,27 +93,19 @@
       errorDiv.textContent = ''
     })
 
-    // Login/Signup Function
+    // Login/Signup
     loginBtn.addEventListener('click', async () => {
       const email = emailInput.value
       const password = passwordInput.value
       errorDiv.textContent = ''
-
-      if (!email || !password) {
-        errorDiv.textContent = 'Email aur Password daal'
-        return
-      }
+      if (!email || !password) return errorDiv.textContent = 'Email aur Password daal'
 
       try {
-        let result
-        if (isLogin) {
-          result = await supabase.auth.signInWithPassword({ email, password })
-        } else {
-          result = await supabase.auth.signUp({ email, password })
-        }
+        let result = isLogin 
+          ? await supabase.auth.signInWithPassword({ email, password })
+          : await supabase.auth.signUp({ email, password })
 
         if (result.error) throw result.error
-        
         if (!isLogin && !result.data.session) {
           errorDiv.textContent = 'Signup ho gaya! Ab Login kar'
           isLogin = true
@@ -93,17 +117,90 @@
       }
     })
 
-    // Logout
-    logoutBtn.addEventListener('click', async () => {
-      await supabase.auth.signOut()
+    logoutBtn.addEventListener('click', async () => await supabase.auth.signOut())
+
+    // Create Post
+    postBtn.addEventListener('click', async () => {
+      const content = postContent.value.trim()
+      if (!content) return
+      
+      const { error } = await supabase.from('posts').insert({ content })
+      if (error) alert(error.message)
+      else {
+        postContent.value = ''
+        loadPosts()
+      }
     })
 
-    // Check Auth State
+    // Search Users
+    searchInput.addEventListener('input', async (e) => {
+      const query = e.target.value.trim()
+      if (query.length < 2) {
+        searchResults.innerHTML = ''
+        return
+      }
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('name, is_verified')
+        .ilike('name', `%${query}%`)
+        .limit(5)
+      
+      if (error) return
+      
+      searchResults.innerHTML = data.map(user => `
+        <div class="search-result">
+          ${user.name} ${user.is_verified ? '<span class="verified">✓</span>' : ''}
+        </div>
+      `).join('') || '<div class="search-result">Koi nahi mila</div>'
+    })
+
+    // Load Posts with Names + Verified Badge
+    async function loadPosts() {
+      const { data, error } = await supabase
+        .from('posts')
+        .select(`
+          *,
+          profiles!posts_user_id_fkey (name, is_verified)
+        `)
+        .order('created_at', { ascending: false })
+      
+      if (error) return console.log(error)
+      
+      postsDiv.innerHTML = data.map(post => `
+        <div class="post">
+          <div class="post-name">
+            ${post.profiles?.name || post.user_email}
+            ${post.profiles?.is_verified ? '<span class="verified">✓</span>' : ''}
+          </div>
+          <div class="post-content">${post.content}</div>
+          <div class="post-time">${new Date(post.created_at).toLocaleString('hi-IN')}</div>
+        </div>
+      `).join('') || '<p>Abhi koi post nahi hai. Pehla post tu kar!</p>'
+    }
+
+    // Get Current User Profile
+    async function getProfile() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      
+      const { data } = await supabase
+        .from('profiles')
+        .select('name, is_verified')
+        .eq('id', user.id)
+        .single()
+      
+      currentUser = data
+      userName.innerHTML = `${data.name} ${data.is_verified ? '<span class="verified">✓</span>' : ''}`
+    }
+
+    // Auth State
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         authForm.style.display = 'none'
         homeDiv.style.display = 'block'
-        userEmail.textContent = session.user.email
+        getProfile()
+        loadPosts()
       } else {
         authForm.style.display = 'block'
         homeDiv.style.display = 'none'
