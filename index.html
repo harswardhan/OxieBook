@@ -16,6 +16,8 @@
 .btn-like { background: #e4e6eb; color: #050505; }
 .btn-liked { background: #1877f2; color: white; }
 .btn-back { background: #e4e6eb; color: #050505; margin-bottom: 10px; }
+.btn-delete { background: #e41e3f; }
+.btn-edit { background: #31a24c; }
 .link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
 .error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -28,7 +30,7 @@
 .post-name:hover { text-decoration: underline; }
 .post-content { margin: 8px 0; color: #050505; }
 .post-time { color: #65676b; font-size: 12px; }
-.post-actions { display: flex; gap: 10px; margin-top: 10px; }
+.post-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
 .verified { color: #1877f2; font-size: 16px; }
 .search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 .search-result:hover { background: #f0f2f5; }
@@ -40,13 +42,15 @@
 .stat { text-align: center; }
 .stat-number { font-weight: bold; font-size: 18px; }
 .stat-label { color: #65676b; font-size: 14px; }
-    
+.edit-box { display: none; margin-top: 10px; }
+.friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+
     /* Bottom Nav Icons */
 .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -1px 5px rgba(0,0,0,0.1); z-index: 100; }
 .nav-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #65676b; font-size: 24px; padding: 5px 15px; }
 .nav-icon.active { color: #1877f2; }
 .nav-icon span { font-size: 11px; margin-top: 2px; }
-    
+
     #fileInput { display: none; }
 .page { display: none; }
 .page.active { display: block; }
@@ -67,7 +71,7 @@
 
     <!-- Main App -->
     <div id="app" style="display: none;">
-      
+
       <!-- Home/Feed Page -->
       <div id="homePage" class="page active">
         <div class="card">
@@ -75,6 +79,7 @@
             <h2>OxieBook</h2>
             <button id="logoutBtn" class="btn-small">Logout</button>
           </div>
+          <div id="friendRequestsBox" class="friend-requests-box" style="display:none;"></div>
           <div id="posts"></div>
         </div>
       </div>
@@ -121,6 +126,7 @@
             <img id="viewProfileAvatar" class="avatar-large" src="https://via.placeholder.com/80" />
             <h2 id="viewProfileName" style="margin: 10px 0 5px 0;"></h2>
             <div id="viewProfileBio" class="bio"></div>
+            <button id="friendActionBtn" class="btn-small" style="display:none; margin-top:10px;"></button>
           </div>
           <div class="profile-stats">
             <div class="stat">
@@ -170,7 +176,7 @@
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
       document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'))
       document.getElementById(pageId).classList.add('active')
-      
+
       const navMap = {
         'homePage': 0, 'searchPage': 1, 'postPage': 2, 'myProfilePage': 3
       }
@@ -193,7 +199,7 @@
 
       try {
         let result = isLogin
-      ? await supabase.auth.signInWithPassword({ email, password })
+     ? await supabase.auth.signInWithPassword({ email, password })
           : await supabase.auth.signUp({ email, password })
 
         if (result.error) throw result.error
@@ -214,7 +220,7 @@
       const { data: { user } } = await supabase.auth.getUser()
       const filePath = `${user.id}/${Date.now()}.jpg`
       const { error } = await supabase.storage.from('avatars').upload(filePath, file)
-      if (error) return alert(error.message)
+      if (error) return showAlert(error.message)
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath)
       await supabase.from('profiles').update({ avatar_url: data.publicUrl }).eq('id', user.id)
       getProfile()
@@ -225,9 +231,9 @@
       const bio = document.getElementById('bioInput').value.trim()
       const { data: { user } } = await supabase.auth.getUser()
       const { error } = await supabase.from('profiles').update({ name, bio }).eq('id', user.id)
-      if (error) alert(error.message)
+      if (error) showAlert(error.message)
       else {
-        alert('Profile update ho gaya!')
+        showAlert('Profile update ho gaya!')
         getProfile()
         loadPosts()
       }
@@ -236,9 +242,9 @@
     // Post
     document.getElementById('postBtn').addEventListener('click', async () => {
       const content = document.getElementById('postContent').value.trim()
-      if (!content) return
+      if (!content) return showAlert('Kuch to likh bhai')
       const { error } = await supabase.from('posts').insert({ content })
-      if (error) alert(error.message)
+      if (error) showAlert(error.message)
       else {
         document.getElementById('postContent').value = ''
         showPage('homePage')
@@ -263,18 +269,44 @@
     window.viewUserProfile = async (userId) => {
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single()
       if (!profile) return
-      
+
       showPage('viewProfilePage')
       document.getElementById('viewProfileAvatar').src = profile.avatar_url || 'https://via.placeholder.com/80'
       document.getElementById('viewProfileName').innerHTML = `${profile.name} ${profile.is_verified? '<span class="verified">✓</span>' : ''}`
       document.getElementById('viewProfileBio').textContent = profile.bio || 'No bio yet'
-      
+
+      // Friend button logic
+      const friendBtn = document.getElementById('friendActionBtn')
+      if (userId!== currentUserId) {
+        const { data: friendData } = await supabase.from('friends')
+         .select('*')
+         .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${currentUserId})`)
+         .single()
+
+        friendBtn.style.display = 'inline-block'
+        if (!friendData) {
+          friendBtn.textContent = '➕ Add Friend'
+          friendBtn.onclick = () => sendFriendRequest(userId, profile.name)
+        } else if (friendData.status === 'pending' && friendData.sender_id === currentUserId) {
+          friendBtn.textContent = 'Request Sent'
+          friendBtn.disabled = true
+        } else if (friendData.status === 'pending' && friendData.receiver_id === currentUserId) {
+          friendBtn.textContent = 'Accept Request'
+          friendBtn.onclick = () => acceptFriendRequest(friendData.id)
+        } else if (friendData.status === 'accepted') {
+          friendBtn.textContent = '✓ Friends'
+          friendBtn.disabled = true
+        }
+      } else {
+        friendBtn.style.display = 'none'
+      }
+
       const { data: posts } = await supabase
-    .from('posts')
-    .select(`*, profiles!posts_user_id_fkey (name, is_verified, avatar_url), likes (user_id)`)
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-      
+   .from('posts')
+   .select(`*, profiles!posts_user_id_fkey (name, is_verified, avatar_url), likes (user_id)`)
+   .eq('user_id', userId)
+   .order('created_at', { ascending: false })
+
       document.getElementById('viewPostCount').textContent = posts.length
       document.getElementById('viewProfilePosts').innerHTML = posts.map(post => renderPost(post)).join('') || '<p>No posts yet.</p>'
     }
@@ -290,15 +322,103 @@
       loadPosts()
     }
 
+    // Edit Post
+    window.editPost = (id) => {
+      document.getElementById(`edit-${id}`).style.display = 'block'
+      document.getElementById(`content-${id}`).style.display = 'none'
+    }
+
+    window.cancelEdit = (id) => {
+      document.getElementById(`edit-${id}`).style.display = 'none'
+      document.getElementById(`content-${id}`).style.display = 'block'
+    }
+
+    window.saveEdit = async (id) => {
+      const newContent = document.getElementById(`editText-${id}`).value.trim()
+      if (!newContent) return showAlert('Kuch likh to bhai')
+      const { error } = await supabase.from('posts').update({ content: newContent }).eq('id', id)
+      if (error) showAlert('Error: ' + error.message)
+      else loadPosts()
+    }
+
+    // Delete Post
+    window.deletePost = async (id) => {
+      if (!confirm('Pakka delete karna hai?')) return
+      const { error } = await supabase.from('posts').delete().eq('id', id)
+      if (error) showAlert('Error: ' + error.message)
+      else loadPosts()
+    }
+
+    // Share Post
+    window.sharePost = (content) => {
+      navigator.clipboard.writeText(`${content}\n\n- Shared from OxieBook: ${window.location.href}`)
+      showAlert('Link copied! Share kar de')
+    }
+
+    // Friend Request
+    window.sendFriendRequest = async (receiverId, receiverName) => {
+      if (!currentUser) return showAlert('Login kar pehle')
+      if (receiverId === currentUser.id) return showAlert('Khud ko request? 😂')
+
+      const { error } = await supabase.from('friends').insert({
+        sender_id: currentUser.id,
+        receiver_id: receiverId,
+        status: 'pending'
+      })
+      if (error) showAlert('Error: ' + error.message)
+      else {
+        showAlert(`${receiverName} ko request bhej di!`)
+        viewUserProfile(receiverId)
+      }
+    }
+
+    // Load Friend Requests
+    async function loadFriendRequests() {
+      const { data, error } = await supabase.from('friends')
+       .select('*, sender:sender_id(email, user_metadata)')
+       .eq('receiver_id', currentUserId)
+       .eq('status', 'pending')
+
+      const reqDiv = document.getElementById('friendRequestsBox')
+      if (data && data.length > 0) {
+        reqDiv.style.display = 'block'
+        reqDiv.innerHTML = '<b>Friend Requests:</b><br>'
+        data.forEach(req => {
+          const name = req.sender.user_metadata?.full_name || req.sender.email
+          reqDiv.innerHTML += `
+            <div style="margin:8px 0;">
+              ${name}
+              <button onclick="acceptFriendRequest('${req.id}')" class="btn-small" style="margin-left:10px;">Accept</button>
+              <button onclick="rejectFriendRequest('${req.id}')" class="btn-small btn-back">Reject</button>
+            </div>
+          `
+        })
+      } else {
+        reqDiv.style.display = 'none'
+      }
+    }
+
+    window.acceptFriendRequest = async (requestId) => {
+      await supabase.from('friends').update({ status: 'accepted' }).eq('id', requestId)
+      showAlert('Friend ban gaya! 🎉')
+      loadFriendRequests()
+    }
+
+    window.rejectFriendRequest = async (requestId) => {
+      await supabase.from('friends').update({ status: 'rejected' }).eq('id', requestId)
+      loadFriendRequests()
+    }
+
     // Render Post
     function renderPost(post) {
       const likesCount = post.likes.length
       const userLiked = post.likes.some(l => l.user_id === currentUserId)
+      const isMyPost = post.user_id === currentUserId
       return `
         <div class="post">
           <div class="post-header">
             <img src="${post.profiles?.avatar_url || 'https://via.placeholder.com/40'}" class="avatar" onclick="viewUserProfile('${post.user_id}')" />
-            <div>
+            <div style="flex:1;">
               <div class="post-name" onclick="viewUserProfile('${post.user_id}')">
                 ${post.profiles?.name || post.user_email}
                 ${post.profiles?.is_verified? '<span class="verified">✓</span>' : ''}
@@ -306,11 +426,23 @@
               <div class="post-time">${new Date(post.created_at).toLocaleString('hi-IN')}</div>
             </div>
           </div>
-          <div class="post-content">${post.content}</div>
+          <div class="post-content" id="content-${post.id}">${post.content}</div>
+          <div class="edit-box" id="edit-${post.id}">
+            <textarea id="editText-${post.id}">${post.content}</textarea>
+            <button onclick="saveEdit('${post.id}')" class="btn-small">Save</button>
+            <button onclick="cancelEdit('${post.id}')" class="btn-small btn-back">Cancel</button>
+          </div>
           <div class="post-actions">
             <button class="btn-small ${userLiked? 'btn-liked' : 'btn-like'}" onclick="toggleLike('${post.id}', ${userLiked})">
-              👍 Like ${likesCount > 0? `(${likesCount})` : ''}
+              👍 ${likesCount > 0? `(${likesCount})` : ''}
             </button>
+            ${isMyPost? `
+              <button class="btn-small btn-edit" onclick="editPost('${post.id}')">✏️ Edit</button>
+              <button class="btn-small btn-delete" onclick="deletePost('${post.id}')">🗑️ Delete</button>
+            ` : `
+              <button class="btn-small" onclick="sendFriendRequest('${post.user_id}', '${post.profiles?.name}')">➕ Friend</button>
+            `}
+            <button class="btn-small" onclick="sharePost('${post.content.replace(/'/g, "\\'")}')">🔗 Share</button>
           </div>
         </div>
       `
@@ -320,9 +452,9 @@
     async function loadPosts() {
       const { data: { user } } = await supabase.auth.getUser()
       const { data } = await supabase
-   .from('posts')
-   .select(`*, profiles!posts_user_id_fkey (name, is_verified, avatar_url), likes (user_id)`)
-   .order('created_at', { ascending: false })
+  .from('posts')
+  .select(`*, profiles!posts_user_id_fkey (name, is_verified, avatar_url), likes (user_id)`)
+  .order('created_at', { ascending: false })
 
       document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('') || '<p>Abhi koi post nahi hai.</p>'
     }
@@ -339,6 +471,7 @@
       document.getElementById('userAvatar').src = data.avatar_url || 'https://via.placeholder.com/80'
       document.getElementById('nameInput').value = data.name || ''
       document.getElementById('bioInput').value = data.bio || ''
+      loadFriendRequests()
     }
 
     // Auth State
@@ -356,92 +489,62 @@
         document.getElementById('bottomNav').style.display = 'none'
       }
     })
-    document.getElementById('forgotBtn').addEventListener('click', () => {
-  showPrompt('Password reset ke liye email daalo:', async (email) => {
-    if (!email) return showAlert('Email to daal bhai')
-    
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://oxie-book.vercel.app'
-    })
-    
-    if (error) showAlert('Error: ' + error.message)
-    else showAlert('Password reset link email pe bhej diya! Inbox + Spam check kar')
-  })
-})
-    // Helper functions - baar baar dhundhne ki zarurat nahi
-const $ = (id) => document.getElementById(id)
-const on = (id, event, fn) => {
-  const el = $(id)
-  if (el) el.addEventListener(event, fn)
-}
 
-// Post upload function - NO WORD LIMIT
-on('postBtn', 'click', async () => {
-  const content = $('postContent').value.trim()
-  
-  if (!content) return showAlert('Kuch to likh bhai')
-  
-  // User check kar
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return showAlert('Pehle login kar bhai')
-  
-  // Supabase me daal de - koi limit nahi
-  const { error } = await supabase.from('posts').insert({ 
-    content: content,
-    user_id: user.id 
-  })
-    
-  if (error) {
-    console.log(error) // Console me error dekh
-    showAlert('Post fail: ' + error.message)
-  } else {
-    showAlert('Post ho gaya!')
-    $('postContent').value = '' // Box khali kar de
-  }
-})
+    document.getElementById('forgotBtn').addEventListener('click', () => {
+      showPrompt('Password reset ke liye email daalo:', async (email) => {
+        if (!email) return showAlert('Email to daal bhai')
+
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: 'https://oxie-book.vercel.app'
+        })
+
+        if (error) showAlert('Error: ' + error.message)
+        else showAlert('Password reset link email pe bhej diya! Inbox + Spam check kar')
+      })
+    })
   </script>
-  <!-- Custom Popup - Dark Blue Theme -->
-<div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center;">
-  <div style="background: #0d47a1; color: white; padding: 25px; border-radius: 12px; max-width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-    <h3 style="margin: 0 0 12px 0; color: #bbdefb;">OxieBook</h3>
-    <p id="alertMsg" style="margin: 0 0 18px 0; color: white;"></p>
-    <input type="email" id="promptInput" placeholder="Apna email daalo" style="display: none; width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: none; box-sizing: border-box;" />
-    <div>
-      <button id="alertOkBtn" style="background: #1976d2; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px;">OK</button>
-      <button id="alertCancelBtn" style="display: none; background: #555; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; margin: 0 5px;">Cancel</button>
+
+  <!-- Custom Popup -->
+  <div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center;">
+    <div style="background: #0d47a1; color: white; padding: 25px; border-radius: 12px; max-width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+      <h3 style="margin: 0 0 12px 0; color: #bbdefb;">OxieBook</h3>
+      <p id="alertMsg" style="margin: 0 0 18px 0; color: white;"></p>
+      <input type="email" id="promptInput" placeholder="Apna email daalo" style="display: none; width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: none; box-sizing: border-box;" />
+      <div>
+        <button id="alertOkBtn" style="background: #1976d2; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px;">OK</button>
+        <button id="alertCancelBtn" style="display: none; background: #555; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; margin: 0 5px;">Cancel</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-// Custom alert + prompt function
-window.showAlert = (msg) => {
-  document.getElementById('alertMsg').innerText = msg
-  document.getElementById('promptInput').style.display = 'none'
-  document.getElementById('alertCancelBtn').style.display = 'none'
-  document.getElementById('customAlert').style.display = 'flex'
-  document.getElementById('alertOkBtn').onclick = () => {
-    document.getElementById('customAlert').style.display = 'none'
+  <script>
+  window.showAlert = (msg) => {
+    document.getElementById('alertMsg').innerText = msg
+    document.getElementById('promptInput').style.display = 'none'
+    document.getElementById('alertCancelBtn').style.display = 'none'
+    document.getElementById('customAlert').style.display = 'flex'
+    document.getElementById('alertOkBtn').onclick = () => {
+      document.getElementById('customAlert').style.display = 'none'
+    }
   }
-}
 
-window.showPrompt = (msg, callback) => {
-  document.getElementById('alertMsg').innerText = msg
-  document.getElementById('promptInput').style.display = 'block'
-  document.getElementById('promptInput').value = ''
-  document.getElementById('alertCancelBtn').style.display = 'inline-block'
-  document.getElementById('customAlert').style.display = 'flex'
-  document.getElementById('promptInput').focus()
-  
-  document.getElementById('alertOkBtn').onclick = () => {
-    const value = document.getElementById('promptInput').value
-    document.getElementById('customAlert').style.display = 'none'
-    callback(value)
+  window.showPrompt = (msg, callback) => {
+    document.getElementById('alertMsg').innerText = msg
+    document.getElementById('promptInput').style.display = 'block'
+    document.getElementById('promptInput').value = ''
+    document.getElementById('alertCancelBtn').style.display = 'inline-block'
+    document.getElementById('customAlert').style.display = 'flex'
+    document.getElementById('promptInput').focus()
+
+    document.getElementById('alertOkBtn').onclick = () => {
+      const value = document.getElementById('promptInput').value
+      document.getElementById('customAlert').style.display = 'none'
+      callback(value)
+    }
+    document.getElementById('alertCancelBtn').onclick = () => {
+      document.getElementById('customAlert').style.display = 'none'
+    }
   }
-  document.getElementById('alertCancelBtn').onclick = () => {
-    document.getElementById('customAlert').style.display = 'none'
-  }
-}
-</script>
+  </script>
 </body>
 </html>
