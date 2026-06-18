@@ -356,17 +356,61 @@
         document.getElementById('bottomNav').style.display = 'none'
       }
     })
-    document.getElementById('forgotBtn').addEventListener('click', async () => {
-  const email = document.getElementById('email').value
-  if (!email) return alert('Pehle email daal bhai')
-  
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://oxie-book.vercel.app'
+    document.getElementById('forgotBtn').addEventListener('click', () => {
+  showPrompt('Password reset ke liye email daalo:', async (email) => {
+    if (!email) return showAlert('Email to daal bhai')
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://oxie-book.vercel.app'
+    })
+    
+    if (error) showAlert('Error: ' + error.message)
+    else showAlert('Password reset link email pe bhej diya! Inbox + Spam check kar')
   })
-  
-  if (error) alert('Error: ' + error.message)
-  else alert('Password reset link email pe bhej diya! Inbox check kar')
 })
   </script>
+  <!-- Custom Popup - Dark Blue Theme -->
+<div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center;">
+  <div style="background: #0d47a1; color: white; padding: 25px; border-radius: 12px; max-width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+    <h3 style="margin: 0 0 12px 0; color: #bbdefb;">OxieBook</h3>
+    <p id="alertMsg" style="margin: 0 0 18px 0; color: white;"></p>
+    <input type="email" id="promptInput" placeholder="Apna email daalo" style="display: none; width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: none; box-sizing: border-box;" />
+    <div>
+      <button id="alertOkBtn" style="background: #1976d2; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px;">OK</button>
+      <button id="alertCancelBtn" style="display: none; background: #555; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; margin: 0 5px;">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Custom alert + prompt function
+window.showAlert = (msg) => {
+  document.getElementById('alertMsg').innerText = msg
+  document.getElementById('promptInput').style.display = 'none'
+  document.getElementById('alertCancelBtn').style.display = 'none'
+  document.getElementById('customAlert').style.display = 'flex'
+  document.getElementById('alertOkBtn').onclick = () => {
+    document.getElementById('customAlert').style.display = 'none'
+  }
+}
+
+window.showPrompt = (msg, callback) => {
+  document.getElementById('alertMsg').innerText = msg
+  document.getElementById('promptInput').style.display = 'block'
+  document.getElementById('promptInput').value = ''
+  document.getElementById('alertCancelBtn').style.display = 'inline-block'
+  document.getElementById('customAlert').style.display = 'flex'
+  document.getElementById('promptInput').focus()
+  
+  document.getElementById('alertOkBtn').onclick = () => {
+    const value = document.getElementById('promptInput').value
+    document.getElementById('customAlert').style.display = 'none'
+    callback(value)
+  }
+  document.getElementById('alertCancelBtn').onclick = () => {
+    document.getElementById('customAlert').style.display = 'none'
+  }
+}
+</script>
 </body>
 </html>
