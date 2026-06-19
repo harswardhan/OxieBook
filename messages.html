@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OxieBook Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-[#efeae2]">
+    <div class="h-screen flex flex-col max-w-5xl mx-auto shadow-2xl">
+
+        <!-- Header -->
+        <div class="bg-[#075e54] text-white p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-arrow-left text-xl cursor-pointer" id="backBtn"></i>
+                <img id="receiverAvatar" src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full object-cover">
+                <div>
+                    <h2 id="receiverName" class="font-semibold">Select User</h2>
+                    <p id="receiverStatus" class="text-xs text-gray-200">offline</p>
+                </div>
+            </div>
+            <div class="flex gap-5 text-xl">
+                <i class="fa-solid fa-video cursor-pointer"></i>
+                <i class="fa-solid fa-phone cursor-pointer"></i>
+                <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+            </div>
+        </div>
+
+        <!-- User Select - Shuru me dikhega -->
+        <div id="userSelectBox" class="bg-white p-4">
+            <select id="receiverSelect" class="border p-3 w-full rounded-lg text-lg">
+                <option value="">Kisse baat karni hai?</option>
+            </select>
+        </div>
+
+        <!-- Chat Area -->
+        <div id="chatBox" class="flex-1 overflow-y-auto p-4 space-y-2 bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] hidden">
+            <!-- Messages yaha aayenge -->
+        </div>
+
+        <!-- Input Area -->
+        <div id="inputArea" class="bg-[#f0f2f5] p-3 flex items-center gap-3 hidden">
+            <i class="fa-regular fa-face-smile text-2xl text-gray-500 cursor-pointer"></i>
+            <i class="fa-solid fa-paperclip text-2xl text-gray-500 cursor-pointer"></i>
+            <input
+                id="messageInput"
+                type="text"
+                placeholder="Type a message"
+                class="flex-1 py-2 px-4 rounded-full border-none outline-none"
+            >
+            <button id="sendBtn" class="bg-[#075e54] text-white w-12 h-12 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-microphone text-xl" id="sendIcon"></i>
+            </button>
+        </div>
+    </div>
+
+<script>
+    // ===== TERE SUPABASE KEYS DAAL DIYE =====
+    const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
+    const SUPABASE_ANON_KEY = 'sb_publishable_iM23kcEkexqxSfRP8p-hvw_jzrtv5hI'
+    // ========================================
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    let currentUser = null
+    let receiverId = null
+    let receiverData = null
+    let messages = []
+    let channel = null
+
+    const chatBox = document.getElementById('chatBox')
+    const messageInput = document.getElementById('messageInput')
+    const sendBtn = document.getElementById('sendBtn')
+    const sendIcon = document.getElementById('sendIcon')
+    const receiverSelect = document.getElementById('receiverSelect')
+    const userSelectBox = document.getElementById('userSelectBox')
+    const inputArea = document.getElementById('inputArea')
+    const receiverName = document.getElementById('receiverName')
+    const receiverAvatar = document.getElementById('receiverAvatar')
+    const receiverStatus = document.getElementById('receiverStatus')
+    const backBtn = document.getElementById('backBtn')
+
+    // 1. INIT - User check + Users list
+    async function init() {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) {
+            document.body.innerHTML = '<div class="p-4 text-center">Login kar pehle bhai<br><a href="index.html" class="text-blue-500">Login Page</a></div>'
+            return
+        }
+        currentUser = user
+
+        const { data: users } = await supabase.from('profiles').select('id, name, avatar_url')
+        users?.filter(u => u.id!== user.id).forEach(u => {
+            const option = document.createElement('option')
+            option.value = u.id
+            option.textContent = u.name || 'No Name'
+            option.dataset.avatar = u.avatar_url || 'https://i.pravatar.cc/40'
+            receiverSelect.appendChild(option)
+        })
+    }
+
+    // 2. USER SELECT KARNE PE
+    receiverSelect.addEventListener('change', async (e) => {
+        receiverId = e.target.value
+        if (!receiverId) return
+
+        const selectedOption = e.target.selectedOptions[0]
+        receiverData = {
+            id: receiverId,
+            name: selectedOption.textContent,
+            avatar: selectedOption.dataset.avatar
+        }
+
+        receiverName.textContent = receiverData.name
+        receiverAvatar.src = receiverData.avatar
+        receiverStatus.textContent = 'online'
+
+        userSelectBox.classList.add('hidden')
+        chatBox.classList.remove('hidden')
+        inputArea.classList.remove('hidden')
+
+        if (channel) supabase.removeChannel(channel)
+        await loadMessages()
+        subscribeToMessages()
+    })
+
+    // 3. BACK BUTTON
+    backBtn.addEventListener('click', () => {
+        chatBox.classList.add('hidden')
+        inputArea.classList.add('hidden')
+        userSelectBox.classList.remove('hidden')
+        receiverSelect.value = ''
+        receiverId = null
+        if (channel) supabase.removeChannel(channel)
+    })
+
+    // 4. MESSAGES LOAD KARO
+    async function loadMessages() {
+        const { data } = await supabase
+       .from('messages')
+       .select('*')
+       .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${currentUser.id})`)
+       .order('created_at', { ascending: true })
+
+        messages = data || []
+        renderMessages()
+        markAsDeliveredAndSeen()
+    }
+
+    // 5. DELIVERED + SEEN MARK KARO
+    async function markAsDeliveredAndSeen() {
+        const toUpdate = messages.filter(m => m.receiver_id === currentUser.id && (!m.delivered_at ||!m.seen_at))
+        if (toUpdate.length > 0) {
+            await supabase.from('messages').update({
+                delivered_at: new Date().toISOString(),
+                seen_at: new Date().toISOString()
+            }).in('id', toUpdate.map(m => m.id))
+        }
+    }
+
+    // 6. REALTIME SUNO
+    function subscribeToMessages() {
+        channel = supabase.channel(`chat:${currentUser.id}:${receiverId}`)
+       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, (payload) => {
+            const msg = payload.new
+            if ((msg.sender_id === currentUser.id && msg.receiver_id === receiverId) ||
+                (msg.sender_id === receiverId && msg.receiver_id === currentUser.id)) {
+
+                if (payload.eventType === 'INSERT') {
+                    messages.push(msg)
+                    if (msg.receiver_id === currentUser.id) {
+                        supabase.from('messages').update({
+                            delivered_at: new Date().toISOString(),
+                            seen_at: new Date().toISOString()
+                        }).eq('id', msg.id)
+                    }
+                }
+                if (payload.eventType === 'UPDATE') {
+                    messages = messages.map(m => m.id === msg.id? msg : m)
+                }
+                renderMessages()
+            }
+         })
+       .subscribe()
+    }
+
+    // 7. MESSAGES DIKHAO - WHATSAPP STYLE
+    function renderMessages() {
+        chatBox.innerHTML = ''
+        messages.forEach(msg => {
+            const isMe = msg.sender_id === currentUser.id
+            const time = new Date(msg.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+
+            let ticks = ''
+            if (isMe) {
+                if (msg.seen_at) {
+                    ticks = '<i class="fa-solid fa-check-double text-[#53bdeb]"></i>' // Blue double tick
+                } else if (msg.delivered_at) {
+                    ticks = '<i class="fa-solid fa-check-double text-gray-400"></i>' // Gray double tick
+                } else {
+                    ticks = '<i class="fa-solid fa-check text-gray-400"></i>' // Single tick
+                }
+            }
+
+            chatBox.innerHTML += `
+                <div class="flex ${isMe? 'justify-end' : 'justify-start'}">
+                    <div class="max-w-[75%] px-3 py-2 rounded-lg shadow ${isMe? 'bg-[#d9fdd3] rounded-tr-none' : 'bg-white rounded-tl-none'}">
+                        <p class="text-sm break-words">${msg.content}</p>
+                        <div class="flex items-center justify-end gap-1 mt-1">
+                            <span class="text-xs text-gray-500">${time}</span>
+                            ${isMe? `<span class="text-xs">${ticks}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `
+        })
+        chatBox.scrollTop = chatBox.scrollHeight
+    }
+
+    // 8. SEND BUTTON ICON CHANGE
+    messageInput.addEventListener('input', () => {
+        if (messageInput.value.trim()) {
+            sendIcon.className = 'fa-solid fa-paper-plane text-xl'
+        } else {
+            sendIcon.className = 'fa-solid fa-microphone text-xl'
+        }
+    })
+
+    // 9. MESSAGE BHEJO
+    async function sendMessage() {
+        const text = messageInput.value.trim()
+        if (!text ||!receiverId) return
+
+        await supabase.from('messages').insert({
+            sender_id: currentUser.id,
+            receiver_id: receiverId,
+            content: text
+        })
+        messageInput.value = ''
+        sendIcon.className = 'fa-solid fa-microphone text-xl'
+    }
+
+    sendBtn.addEventListener('click', sendMessage)
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage()
+    })
+
+    init()
+</script>
+</body>
+</html>
