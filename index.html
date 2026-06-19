@@ -457,11 +457,13 @@
       const { data: { user } } = await supabase.auth.getUser()
       const { data } = await supabase
   .from('posts')
-  .select(`
-  *,
-  profiles:user_id (name, is_verified, avatar_url),
-  likes:likes (user_id)
-`)
+  .select('*')
+        .order('created_at', { ascending: false })
+
+console.log('DATA:', data)  // <-- Ye line add kar
+console.log('ERROR:', error) // <-- Ye bhi add kar
+
+document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('') || '<p>Abhi koi post nahi hai.</p>'
   .order('created_at', { ascending: false })
 
       document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('') || '<p>Abhi koi post nahi hai.</p>'
