@@ -415,9 +415,9 @@
 
     // Render Post
     function renderPost(post) {
-      const likesCount = post.likes.length
-      const userLiked = post.likes.some(l => l.user_id === currentUserId)
-      const isMyPost = post.user_id === currentUserId
+      const likesCount = post.likes?.length || 0
+  const userLiked = post.likes?.some(l => l.user_id === currentUserId) || false
+  const isMyPost = post.user_id === currentUserId
       return `
         <div class="post">
           <div class="post-header">
@@ -454,20 +454,29 @@
 
     // Load Posts
     async function loadPosts() {
-      const { data: { user } } = await supabase.auth.getUser()
-      const { data } = await supabase
+  const { data: { user } } = await supabase.auth.getUser()
+  currentUserId = user?.id
+  
+  const { data, error } = await supabase
   .from('posts')
-  .select('*')
-        .order('created_at', { ascending: false })
-
-console.log('DATA:', data)  // <-- Ye line add kar
-console.log('ERROR:', error) // <-- Ye bhi add kar
-
-document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('') || '<p>Abhi koi post nahi hai.</p>'
+  .select('*, profiles (name, is_verified, avatar_url)')
   .order('created_at', { ascending: false })
-
-      document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('') || '<p>Abhi koi post nahi hai.</p>'
-    }
+  
+  console.log('POST DATA:', data)
+  console.log('POST ERROR:', error)
+  
+  if (error) {
+    document.getElementById('posts').innerHTML = `<p style="color:red">Error: ${error.message}</p>`
+    return
+  }
+  
+  if (!data || data.length === 0) {
+    document.getElementById('posts').innerHTML = '<p>Abhi koi post nahi hai.</p>'
+    return
+  }
+  
+  document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('')
+}
 
     // Get Profile
     async function getProfile() {
