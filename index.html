@@ -6,54 +6,69 @@
   <title>OxieBook</title>
   <style>
     body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 0 0 70px 0; }
-.container { max-width: 500px; margin: 0 auto; padding: 20px; }
-.card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
+    .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
     h2 { text-align: center; color: #1877f2; margin: 0 0 15px 0; }
     input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: Arial; }
     button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
     button:hover { background: #166fe5; }
-.btn-small { width: auto; padding: 6px 12px; font-size: 14px; margin: 0; }
-.btn-like { background: #e4e6eb; color: #050505; }
-.btn-liked { background: #1877f2; color: white; }
-.btn-back { background: #e4e6eb; color: #050505; margin-bottom: 10px; }
-.btn-delete { background: #e41e3f; }
-.btn-edit { background: #31a24c; }
-.link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
-.error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.post { border-bottom: 1px solid #eee; padding: 15px 0; }
-.post:last-child { border-bottom: none; }
-.post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-.avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ddd; cursor: pointer; }
-.avatar-large { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #ddd; }
-.post-name { font-weight: bold; color: #050505; font-size: 15px; display: flex; align-items: center; gap: 4px; cursor: pointer; }
-.post-name:hover { text-decoration: underline; }
-.post-content { margin: 8px 0; color: #050505; }
-.post-time { color: #65676b; font-size: 12px; }
-.post-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-.verified { color: #1877f2; font-size: 16px; }
-.search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-.search-result:hover { background: #f0f2f5; }
-.profile-section { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
-.profile-section input { margin: 0; }
-.bio { color: #65676b; font-size: 14px; margin: 5px 0; }
-.profile-header { text-align: center; padding: 20px 0; }
-.profile-stats { display: flex; justify-content: center; gap: 30px; margin: 15px 0; }
-.stat { text-align: center; }
-.stat-number { font-weight: bold; font-size: 18px; }
-.stat-label { color: #65676b; font-size: 14px; }
-.edit-box { display: none; margin-top: 10px; }
-.friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+    .btn-small { width: auto; padding: 6px 12px; font-size: 14px; margin: 0; }
+    .btn-like { background: #e4e6eb; color: #050505; }
+    .btn-liked { background: #1877f2; color: white; }
+    .btn-back { background: #e4e6eb; color: #050505; margin-bottom: 10px; }
+    .btn-delete { background: #e41e3f; }
+    .btn-edit { background: #31a24c; }
+    .link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
+    .error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .post { border-bottom: 1px solid #eee; padding: 15px 0; }
+    .post:last-child { border-bottom: none; }
+    .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ddd; cursor: pointer; }
+    .avatar-large { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #ddd; }
+    .post-name { font-weight: bold; color: #050505; font-size: 15px; display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .post-name:hover { text-decoration: underline; }
+    .post-content { margin: 8px 0; color: #050505; }
+    .post-time { color: #65676b; font-size: 12px; }
+    .post-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+    .verified { color: #1877f2; font-size: 16px; }
+    .search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+    .search-result:hover { background: #f0f2f5; }
+    .profile-section { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+    .profile-section input { margin: 0; }
+    .bio { color: #65676b; font-size: 14px; margin: 5px 0; }
+    .profile-header { text-align: center; padding: 20px 0; }
+    .profile-stats { display: flex; justify-content: center; gap: 30px; margin: 15px 0; }
+    .stat { text-align: center; }
+    .stat-number { font-weight: bold; font-size: 18px; }
+    .stat-label { color: #65676b; font-size: 14px; }
+    .edit-box { display: none; margin-top: 10px; }
+    .friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
 
     /* Bottom Nav Icons */
-.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -1px 5px rgba(0,0,0,0.1); z-index: 100; }
-.nav-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #65676b; font-size: 24px; padding: 5px 15px; }
-.nav-icon.active { color: #1877f2; }
-.nav-icon span { font-size: 11px; margin-top: 2px; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -1px 5px rgba(0,0,0,0.1); z-index: 100; }
+    .nav-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #65676b; font-size: 24px; padding: 5px 15px; }
+    .nav-icon.active { color: #1877f2; }
+    .nav-icon span { font-size: 11px; margin-top: 2px; }
 
     #fileInput { display: none; }
-.page { display: none; }
-.page.active { display: block; }
+    .page { display: none; }
+    .page.active { display: block; }
+    
+    /* NAYA: Chat Modal CSS */
+    .chat-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: white; z-index: 999; display: none; flex-direction: column; }
+    .chat-modal.active { display: flex; }
+    .chat-header { background: #1877f2; color: white; padding: 15px; display: flex; align-items: center; gap: 12px; }
+    .chat-body { flex: 1; overflow-y: auto; padding: 15px; background: #f0f2f5; }
+    .chat-input-area { padding: 10px; background: white; border-top: 1px solid #ddd; display: flex; gap: 8px; }
+    .chat-input-area input { margin: 0; }
+    .message { margin-bottom: 10px; display: flex; }
+    .message.sent { justify-content: flex-end; }
+    .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 18px; }
+    .message.sent .message-bubble { background: #1877f2; color: white; }
+    .message.received .message-bubble { background: white; }
+    .message-time { font-size: 11px; opacity: 0.7; margin-top: 3px; }
+    .unread-badge { background: red; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; align-items: center; justify-content: center; position: absolute; top: -5px; right: -5px; }
   </style>
 </head>
 <body>
@@ -77,9 +92,22 @@
         <div class="card">
           <div class="header">
             <h2>OxieBook</h2>
-            <button id="logoutBtn" class="btn-small">Logout</button>
+            <div style="display: flex; gap: 15px; align-items: center;">
+              <div style="position: relative; cursor: pointer;" onclick="openChatList()">
+                <span style="font-size: 22px;">💬</span>
+                <span id="chatUnreadBadge" class="unread-badge" style="display: none;">0</span>
+              </div>
+              <button id="logoutBtn" class="btn-small">Logout</button>
+            </div>
           </div>
           <div id="friendRequestsBox" class="friend-requests-box" style="display:none;"></div>
+          
+          <!-- NAYA: Quick Post Box -->
+          <div style="display: flex; gap: 10px; align-items: center; padding: 12px; background: #f0f2f5; border-radius: 8px; margin-bottom: 15px; cursor: pointer;" onclick="showPage('postPage')">
+            <img id="quickPostAvatar" src="https://via.placeholder.com/40" class="avatar" style="width: 40px; height: 40px;" />
+            <div style="flex: 1; color: #65676b;">Kya soch rahe ho?</div>
+          </div>
+          
           <div id="posts"></div>
         </div>
       </div>
@@ -98,11 +126,10 @@
         <div class="card">
           <h3>Create Post</h3>
           <textarea id="postContent" placeholder="Kya soch rahe ho?"></textarea>
-<button id="postBtn">Post Karo</button>
+          <button id="postBtn">Post Karo</button>
         </div>
       </div>
-
-      <!-- My Profile Page -->
+            <!-- My Profile Page -->
       <div id="myProfilePage" class="page">
         <div class="card">
           <div class="profile-header">
@@ -127,6 +154,7 @@
             <h2 id="viewProfileName" style="margin: 10px 0 5px 0;"></h2>
             <div id="viewProfileBio" class="bio"></div>
             <button id="friendActionBtn" class="btn-small" style="display:none; margin-top:10px;"></button>
+            <button id="messageUserBtn" class="btn-small" style="display:none; margin-top:10px; background: #1877f2;">💬 Message</button>
           </div>
           <div class="profile-stats">
             <div class="stat">
@@ -160,7 +188,49 @@
     </div>
   </div>
 
-  <script type="module">
+  <!-- NAYA: CHAT MODAL - User List -->
+  <div id="chatListModal" class="chat-modal">
+    <div class="chat-header">
+      <span style="font-size: 24px; cursor: pointer;" onclick="closeChatList()">←</span>
+      <h3 style="margin: 0; flex: 1;">Messages</h3>
+    </div>
+    <div class="chat-body" id="chatUserList">
+      <div style="text-align: center; color: #65676b; margin-top: 30px;">Users load ho rahe hai...</div>
+    </div>
+  </div>
+
+  <!-- NAYA: CHAT MODAL - Chat Window -->
+  <div id="chatWindowModal" class="chat-modal">
+    <div class="chat-header">
+      <span style="font-size: 24px; cursor: pointer;" onclick="backToChatList()">←</span>
+      <img id="chatWindowAvatar" src="https://via.placeholder.com/40" class="avatar" style="width: 40px; height: 40px;" />
+      <div style="flex: 1;">
+        <div id="chatWindowName" style="font-weight: bold;"></div>
+        <div id="chatWindowStatus" style="font-size: 12px; opacity: 0.9;">Online</div>
+      </div>
+    </div>
+    <div class="chat-body" id="chatMessages">
+      <div style="text-align: center; color: #65676b; margin-top: 30px;">Loading messages...</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chatMessageInput" placeholder="Message likho..." style="flex: 1;" />
+      <button id="sendMessageBtn" class="btn-small" style="width: auto; padding: 12px 20px; margin: 0;">Send</button>
+    </div>
+  </div>
+
+  <!-- Custom Popup -->
+  <div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center;">
+    <div style="background: #0d47a1; color: white; padding: 25px; border-radius: 12px; max-width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+      <h3 style="margin: 0 0 12px 0; color: #bbdefb;">OxieBook</h3>
+      <p id="alertMsg" style="margin: 0 0 18px 0; color: white;"></p>
+      <input type="email" id="promptInput" placeholder="Apna email daalo" style="display: none; width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: none; box-sizing: border-box;" />
+      <div>
+        <button id="alertOkBtn" style="background: #1976d2; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px;">OK</button>
+        <button id="alertCancelBtn" style="display: none; background: #555; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; margin: 0 5px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+    <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
     const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
@@ -170,22 +240,22 @@
     let isLogin = true
     let currentUserId = null
     let currentUser = null
+    let selectedChatUser = null
+    let messageSubscription = null
 
-    // Page Navigation
+    // ========== PAGE NAVIGATION ==========
     window.showPage = (pageId) => {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
       document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'))
       document.getElementById(pageId).classList.add('active')
 
-      const navMap = {
-        'homePage': 0, 'searchPage': 1, 'postPage': 2, 'myProfilePage': 3
-      }
+      const navMap = { 'homePage': 0, 'searchPage': 1, 'postPage': 2, 'myProfilePage': 3 }
       if (navMap[pageId]!== undefined) {
         document.querySelectorAll('.nav-icon')[navMap[pageId]].classList.add('active')
       }
     }
 
-    // Auth
+    // ========== AUTH ==========
     document.getElementById('toggleBtn').addEventListener('click', () => {
       isLogin =!isLogin
       document.getElementById('loginBtn').textContent = isLogin? 'Log In' : 'Sign Up'
@@ -199,7 +269,7 @@
 
       try {
         let result = isLogin
-     ? await supabase.auth.signInWithPassword({ email, password })
+         ? await supabase.auth.signInWithPassword({ email, password })
           : await supabase.auth.signUp({ email, password })
 
         if (result.error) throw result.error
@@ -211,7 +281,18 @@
 
     document.getElementById('logoutBtn').addEventListener('click', async () => await supabase.auth.signOut())
 
-    // Profile Update
+    document.getElementById('forgotBtn').addEventListener('click', () => {
+      showPrompt('Password reset ke liye email daalo:', async (email) => {
+        if (!email) return showAlert('Email to daal bhai')
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: 'https://oxie-book.vercel.app'
+        })
+        if (error) showAlert('Error: ' + error.message)
+        else showAlert('Password reset link email pe bhej diya! Inbox + Spam check kar')
+      })
+    })
+
+    // ========== PROFILE UPDATE ==========
     document.getElementById('dpBtn').addEventListener('click', () => document.getElementById('fileInput').click())
 
     document.getElementById('fileInput').addEventListener('change', async (e) => {
@@ -239,7 +320,7 @@
       }
     })
 
-    // Post
+    // ========== POST ==========
     document.getElementById('postBtn').addEventListener('click', async () => {
       const content = document.getElementById('postContent').value.trim()
       if (!content) return showAlert('Kuch to likh bhai')
@@ -252,7 +333,7 @@
       }
     })
 
-    // Search
+    // ========== SEARCH ==========
     document.getElementById('searchInput').addEventListener('input', async (e) => {
       const query = e.target.value.trim()
       if (query.length < 2) return document.getElementById('searchResults').innerHTML = ''
@@ -265,7 +346,7 @@
       `).join('')
     })
 
-    // View User Profile
+    // ========== VIEW USER PROFILE ==========
     window.viewUserProfile = async (userId) => {
       const { data: profile } = await supabase.from('profiles').select('*').eq('id', userId).single()
       if (!profile) return
@@ -277,6 +358,8 @@
 
       // Friend button logic
       const friendBtn = document.getElementById('friendActionBtn')
+      const messageBtn = document.getElementById('messageUserBtn')
+
       if (userId!== currentUserId) {
         const { data: friendData } = await supabase.from('friends')
          .select('*')
@@ -284,286 +367,105 @@
          .single()
 
         friendBtn.style.display = 'inline-block'
+        messageBtn.style.display = 'inline-block'
+        messageBtn.onclick = () => openChatWindow(userId, profile.name, profile.avatar_url)
+
         if (!friendData) {
           friendBtn.textContent = '➕ Add Friend'
           friendBtn.onclick = () => sendFriendRequest(userId, profile.name)
+          friendBtn.disabled = false
         } else if (friendData.status === 'pending' && friendData.sender_id === currentUserId) {
           friendBtn.textContent = 'Request Sent'
           friendBtn.disabled = true
         } else if (friendData.status === 'pending' && friendData.receiver_id === currentUserId) {
           friendBtn.textContent = 'Accept Request'
           friendBtn.onclick = () => acceptFriendRequest(friendData.id)
+          friendBtn.disabled = false
         } else if (friendData.status === 'accepted') {
           friendBtn.textContent = '✓ Friends'
           friendBtn.disabled = true
         }
       } else {
         friendBtn.style.display = 'none'
+        messageBtn.style.display = 'none'
       }
 
       const { data: posts } = await supabase
-   .from('posts')
-   .select(`
-  *,
-  profiles:user_id (name, is_verified, avatar_url),
-  likes:likes (user_id)
-`)
-   .eq('user_id', userId)
-   .order('created_at', { ascending: false })
+       .from('posts')
+       .select(`*, profiles:user_id (name, is_verified, avatar_url), likes:likes (user_id)`)
+       .eq('user_id', userId)
+       .order('created_at', { ascending: false })
 
       document.getElementById('viewPostCount').textContent = posts.length
       document.getElementById('viewProfilePosts').innerHTML = posts.map(post => renderPost(post)).join('') || '<p>No posts yet.</p>'
     }
+      -- 1. Profiles Table
+create table profiles (
+  id uuid references auth.users primary key,
+  name text,
+  bio text,
+  avatar_url text,
+  is_verified boolean default false
+);
 
-    // Like Post
-    window.toggleLike = async (postId, liked) => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (liked) {
-        await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', user.id)
-      } else {
-        await supabase.from('likes').insert({ post_id: postId, user_id: user.id })
-      }
-      loadPosts()
-    }
+-- 2. Posts Table
+create table posts (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid references auth.users,
+  content text,
+  created_at timestamp with time zone default now()
+);
 
-    // Edit Post
-    window.editPost = (id) => {
-      document.getElementById(`edit-${id}`).style.display = 'block'
-      document.getElementById(`content-${id}`).style.display = 'none'
-    }
+-- 3. Likes Table
+create table likes (
+  id uuid primary key default gen_random_uuid(),
+  post_id uuid references posts,
+  user_id uuid references auth.users,
+  created_at timestamp with time zone default now(),
+  unique(post_id, user_id)
+);
 
-    window.cancelEdit = (id) => {
-      document.getElementById(`edit-${id}`).style.display = 'none'
-      document.getElementById(`content-${id}`).style.display = 'block'
-    }
+-- 4. Friends Table
+create table friends (
+  id uuid primary key default gen_random_uuid(),
+  sender_id uuid references auth.users,
+  receiver_id uuid references auth.users,
+  status text default 'pending',
+  created_at timestamp with time zone default now()
+);
 
-    window.saveEdit = async (id) => {
-      const newContent = document.getElementById(`editText-${id}`).value.trim()
-      if (!newContent) return showAlert('Kuch likh to bhai')
-      const { error } = await supabase.from('posts').update({ content: newContent }).eq('id', id)
-      if (error) showAlert('Error: ' + error.message)
-      else loadPosts()
-    }
+-- 5. Messages Table
+create table messages (
+  id uuid primary key default gen_random_uuid(),
+  sender_id uuid references auth.users,
+  receiver_id uuid references auth.users,
+  content text,
+  created_at timestamp with time zone default now(),
+  seen_at timestamp with time zone
+);
 
-    // Delete Post
-    window.deletePost = async (id) => {
-      if (!confirm('Pakka delete karna hai?')) return
-      const { error } = await supabase.from('posts').delete().eq('id', id)
-      if (error) showAlert('Error: ' + error.message)
-      else loadPosts()
-    }
+-- RLS Policies
+alter table profiles enable row level security;
+create policy "Public read" on profiles for select using (true);
+create policy "User update" on profiles for update using (auth.uid() = id);
 
-    // Share Post
-    window.sharePost = (content) => {
-      navigator.clipboard.writeText(`${content}\n\n- Shared from OxieBook: ${window.location.href}`)
-      showAlert('Link copied! Share kar de')
-    }
+alter table posts enable row level security;
+create policy "Public read" on posts for select using (true);
+create policy "User insert" on posts for insert with check (auth.uid() = user_id);
+create policy "User update" on posts for update using (auth.uid() = user_id);
+create policy "User delete" on posts for delete using (auth.uid() = user_id);
 
-    // Friend Request
-    window.sendFriendRequest = async (receiverId, receiverName) => {
-      if (!currentUser) return showAlert('Login kar pehle')
-      if (receiverId === currentUser.id) return showAlert('Khud ko request? 😂')
+alter table likes enable row level security;
+create policy "Public read" on likes for select using (true);
+create policy "User like" on likes for insert with check (auth.uid() = user_id);
+create policy "User unlike" on likes for delete using (auth.uid() = user_id);
 
-      const { error } = await supabase.from('friends').insert({
-        sender_id: currentUser.id,
-        receiver_id: receiverId,
-        status: 'pending'
-      })
-      if (error) showAlert('Error: ' + error.message)
-      else {
-        showAlert(`${receiverName} ko request bhej di!`)
-        viewUserProfile(receiverId)
-      }
-    }
+alter table friends enable row level security;
+create policy "View friends" on friends for select using (auth.uid() = sender_id or auth.uid() = receiver_id);
+create policy "Send request" on friends for insert with check (auth.uid() = sender_id);
+create policy "Update request" on friends for update using (auth.uid() = receiver_id);
 
-    // Load Friend Requests
-    async function loadFriendRequests() {
-      const { data, error } = await supabase.from('friends')
-       .select('*, sender:sender_id(email, user_metadata)')
-       .eq('receiver_id', currentUserId)
-       .eq('status', 'pending')
-
-      const reqDiv = document.getElementById('friendRequestsBox')
-      if (data && data.length > 0) {
-        reqDiv.style.display = 'block'
-        reqDiv.innerHTML = '<b>Friend Requests:</b><br>'
-        data.forEach(req => {
-          const name = req.sender.user_metadata?.full_name || req.sender.email
-          reqDiv.innerHTML += `
-            <div style="margin:8px 0;">
-              ${name}
-              <button onclick="acceptFriendRequest('${req.id}')" class="btn-small" style="margin-left:10px;">Accept</button>
-              <button onclick="rejectFriendRequest('${req.id}')" class="btn-small btn-back">Reject</button>
-            </div>
-          `
-        })
-      } else {
-        reqDiv.style.display = 'none'
-      }
-    }
-
-    window.acceptFriendRequest = async (requestId) => {
-      await supabase.from('friends').update({ status: 'accepted' }).eq('id', requestId)
-      showAlert('Friend ban gaya! 🎉')
-      loadFriendRequests()
-    }
-
-    window.rejectFriendRequest = async (requestId) => {
-      await supabase.from('friends').update({ status: 'rejected' }).eq('id', requestId)
-      loadFriendRequests()
-    }
-
-    // Render Post
-    function renderPost(post) {
-      const likesCount = post.likes?.length || 0
-  const userLiked = post.likes?.some(l => l.user_id === currentUserId) || false
-  const isMyPost = post.user_id === currentUserId
-      return `
-        <div class="post">
-          <div class="post-header">
-            <img src="${post.profiles?.avatar_url || 'https://via.placeholder.com/40'}" class="avatar" onclick="viewUserProfile('${post.user_id}')" />
-            <div style="flex:1;">
-              <div class="post-name" onclick="viewUserProfile('${post.user_id}')">
-                ${post.profiles?.name || post.user_email}
-                ${post.profiles?.is_verified? '<span class="verified">✓</span>' : ''}
-              </div>
-              <div class="post-time">${new Date(post.created_at).toLocaleString('hi-IN')}</div>
-            </div>
-          </div>
-          <div class="post-content" id="content-${post.id}">${post.content}</div>
-          <div class="edit-box" id="edit-${post.id}">
-            <textarea id="editText-${post.id}">${post.content}</textarea>
-            <button onclick="saveEdit('${post.id}')" class="btn-small">Save</button>
-            <button onclick="cancelEdit('${post.id}')" class="btn-small btn-back">Cancel</button>
-          </div>
-          <div class="post-actions">
-            <button class="btn-small ${userLiked? 'btn-liked' : 'btn-like'}" onclick="toggleLike('${post.id}', ${userLiked})">
-              👍 ${likesCount > 0? `(${likesCount})` : ''}
-            </button>
-            ${isMyPost? `
-              <button class="btn-small btn-edit" onclick="editPost('${post.id}')">✏️ Edit</button>
-              <button class="btn-small btn-delete" onclick="deletePost('${post.id}')">🗑️ Delete</button>
-            ` : `
-              <button class="btn-small" onclick="sendFriendRequest('${post.user_id}', '${post.profiles?.name}')">➕ Friend</button>
-            `}
-            <button class="btn-small" onclick="sharePost('${post.content.replace(/'/g, "\\'")}')">🔗 Share</button>
-          </div>
-        </div>
-      `
-    }
-
-    // Load Posts
-    async function loadPosts() {
-  const { data: { user } } = await supabase.auth.getUser()
-  currentUserId = user?.id
-  
-  const { data, error } = await supabase
-  .from('posts')
-  .select('*, profiles (name, is_verified, avatar_url)')
-  .order('created_at', { ascending: false })
-  
-  console.log('POST DATA:', data)
-  console.log('POST ERROR:', error)
-  
-  if (error) {
-    document.getElementById('posts').innerHTML = `<p style="color:red">Error: ${error.message}</p>`
-    return
-  }
-  
-  if (!data || data.length === 0) {
-    document.getElementById('posts').innerHTML = '<p>Abhi koi post nahi hai.</p>'
-    return
-  }
-  
-  document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('')
-}
-
-    // Get Profile
-    async function getProfile() {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-      currentUserId = user.id
-      const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
-      currentUser = data
-      document.getElementById('userName').innerHTML = `${data.name} ${data.is_verified? '<span class="verified">✓</span>' : ''}`
-      document.getElementById('userBio').textContent = data.bio || 'Bio add karo'
-      document.getElementById('userAvatar').src = data.avatar_url || 'https://via.placeholder.com/80'
-      document.getElementById('nameInput').value = data.name || ''
-      document.getElementById('bioInput').value = data.bio || ''
-      loadFriendRequests()
-    }
-
-    // Auth State
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        document.getElementById('auth-form').style.display = 'none'
-        document.getElementById('app').style.display = 'block'
-        document.getElementById('bottomNav').style.display = 'flex'
-        getProfile()
-        loadPosts()
-        showPage('homePage')
-      } else {
-        document.getElementById('auth-form').style.display = 'block'
-        document.getElementById('app').style.display = 'none'
-        document.getElementById('bottomNav').style.display = 'none'
-      }
-    })
-
-    document.getElementById('forgotBtn').addEventListener('click', () => {
-      showPrompt('Password reset ke liye email daalo:', async (email) => {
-        if (!email) return showAlert('Email to daal bhai')
-
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: 'https://oxie-book.vercel.app'
-        })
-
-        if (error) showAlert('Error: ' + error.message)
-        else showAlert('Password reset link email pe bhej diya! Inbox + Spam check kar')
-      })
-    })
-  </script>
-
-  <!-- Custom Popup -->
-  <div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 999; align-items: center; justify-content: center;">
-    <div style="background: #0d47a1; color: white; padding: 25px; border-radius: 12px; max-width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-      <h3 style="margin: 0 0 12px 0; color: #bbdefb;">OxieBook</h3>
-      <p id="alertMsg" style="margin: 0 0 18px 0; color: white;"></p>
-      <input type="email" id="promptInput" placeholder="Apna email daalo" style="display: none; width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: none; box-sizing: border-box;" />
-      <div>
-        <button id="alertOkBtn" style="background: #1976d2; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px;">OK</button>
-        <button id="alertCancelBtn" style="display: none; background: #555; color: white; border: none; padding: 10px 25px; border-radius: 6px; cursor: pointer; margin: 0 5px;">Cancel</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-  window.showAlert = (msg) => {
-    document.getElementById('alertMsg').innerText = msg
-    document.getElementById('promptInput').style.display = 'none'
-    document.getElementById('alertCancelBtn').style.display = 'none'
-    document.getElementById('customAlert').style.display = 'flex'
-    document.getElementById('alertOkBtn').onclick = () => {
-      document.getElementById('customAlert').style.display = 'none'
-    }
-  }
-
-  window.showPrompt = (msg, callback) => {
-    document.getElementById('alertMsg').innerText = msg
-    document.getElementById('promptInput').style.display = 'block'
-    document.getElementById('promptInput').value = ''
-    document.getElementById('alertCancelBtn').style.display = 'inline-block'
-    document.getElementById('customAlert').style.display = 'flex'
-    document.getElementById('promptInput').focus()
-
-    document.getElementById('alertOkBtn').onclick = () => {
-      const value = document.getElementById('promptInput').value
-      document.getElementById('customAlert').style.display = 'none'
-      callback(value)
-    }
-    document.getElementById('alertCancelBtn').onclick = () => {
-      document.getElementById('customAlert').style.display = 'none'
-    }
-  }
-  </script>
-</body>
-</html>
+alter table messages enable row level security;
+create policy "View messages" on messages for select using (auth.uid() = sender_id or auth.uid() = receiver_id);
+create policy "Send message" on messages for insert with check (auth.uid() = sender_id);
+create policy "Update seen" on messages for update using (auth.uid() = receiver_id);
