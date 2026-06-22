@@ -7,64 +7,63 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     body { background: #f0f2f5; color: #1c1e21; padding-bottom: 70px; }
-   .auth-container { max-width: 400px; margin: 60px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-   .auth-container h1 { color: #1877f2; text-align: center; margin-bottom: 20px; font-size: 32px; }
+  .auth-container { max-width: 400px; margin: 60px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .auth-container h1 { color: #1877f2; text-align: center; margin-bottom: 20px; font-size: 32px; }
     input, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
     button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 8px 0; }
     button:hover { background: #166fe5; }
-   .btn-small { padding: 6px 12px; font-size: 13px; width: auto; display: inline-block; margin: 4px 2px; }
-   .btn-back { background: #1877f2; color: white; margin-bottom: 10px; }
-   .btn-back:hover { background: #166fe5; }
-   .btn-like { background: #1877f2; }
-   .btn-liked { background: #e4e6eb; color: #1877f2; }
-   .btn-edit { background: #f59e0b; }
-   .btn-delete { background: #ef4444; }
-   .btn-message { background: #42b72a; }
-   .link { color: #1877f2; text-align: center; display: block; margin: 12px 0; cursor: pointer; }
-   .page { display: none; max-width: 600px; margin: 0 auto; padding: 10px; }
-   .page.active { display: block; }
-   .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-   .header h2 { color: #1877f2; font-size: 20px; }
-   .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-   .post { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-   .post-header { display: flex; align-items: center; margin-bottom: 10px; }
-   .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
-   .post-name { font-weight: 600; cursor: pointer; }
-   .verified { color: #1877f2; font-size: 12px; margin-left: 4px; }
-   .post-time { font-size: 12px; color: #65676b; }
-   .post-content { margin: 10px 0; line-height: 1.4; }
-   .post-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e4e6eb; }
-   .profile-header { text-align: center; padding: 20px; }
-   .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px; }
-   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 4px rgba(0,0,0,0.1); z-index: 100; }
-   .nav-icon { padding: 8px 16px; cursor: pointer; font-size: 24px; position: relative; }
-   .nav-icon.active { color: #1877f2; }
-   .badge { position: absolute; top: 2px; right: 8px; background: #e41e3f; color: white; border-radius: 10px; padding: 2px 6px; font-size: 11px; min-width: 18px; text-align: center; }
-   .search-result { padding: 10px; border-bottom: 1px solid #e4e6eb; cursor: pointer; display: flex; align-items: center; }
-   .search-result:hover { background: #f0f2f5; }
-   .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
-   .modal.active { display: flex; align-items: center; justify-content: center; }
-   .modal-content { background: white; width: 90%; max-width: 500px; max-height: 80vh; border-radius: 8px; display: flex; flex-direction: column; }
-   .modal-header { padding: 15px; border-bottom: 1px solid #e4e6eb; display: flex; justify-content: space-between; align-items: center; }
-   .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
-   .modal-footer { padding: 15px; border-top: 1px solid #e4e6eb; }
-   .message { margin: 8px 0; display: flex; flex-direction: column; }
-   .message.sent { align-items: flex-end; }
-   .message.received { align-items: flex-start; }
-   .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 18px; word-wrap: break-word; }
-   .message.sent.message-bubble { background: #1877f2; color: white; }
-   .message.received.message-bubble { background: #e4e6eb; color: black; }
-   .message-time { font-size: 11px; color: #65676b; margin-top: 2px; }
-   .chat-input { display: flex; gap: 8px; }
-   .chat-input input { flex: 1; margin: 0; }
-   .chat-input button { width: auto; margin: 0; padding: 10px 20px; }
-   .custom-alert { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
-   .alert-box { background: white; padding: 20px; border-radius: 8px; max-width: 300px; text-align: center; }
-   .unread-badge { position: absolute; top: -5px; right: -5px; background: #e41e3f; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
-   .edit-box { display: none; margin-top: 10px; }
-   .edit-box textarea { margin: 5px 0; }
-   .friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #ffc107; }
-   .friend-tag { background: #42b72a; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; }
+  .btn-small { padding: 6px 12px; font-size: 13px; width: auto; display: inline-block; margin: 4px 2px; }
+  .btn-back { background: #1877f2; color: white; margin-bottom: 10px; }
+  .btn-back:hover { background: #166fe5; }
+  .btn-like { background: #1877f2; }
+  .btn-liked { background: #e4e6eb; color: #1877f2; }
+  .btn-edit { background: #f59e0b; }
+  .btn-delete { background: #ef4444; }
+  .btn-message { background: #42b72a; }
+  .link { color: #1877f2; text-align: center; display: block; margin: 12px 0; cursor: pointer; }
+  .page { display: none; max-width: 600px; margin: 0 auto; padding: 10px; }
+  .page.active { display: block; }
+  .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .header h2 { color: #1877f2; font-size: 20px; }
+  .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .post { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+  .post-header { display: flex; align-items: center; margin-bottom: 10px; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
+  .post-name { font-weight: 600; cursor: pointer; display: flex; align-items: center; }
+  .verified { color: #1877f2; font-size: 14px; margin-left: 4px; }
+  .post-time { font-size: 12px; color: #65676b; }
+  .post-content { margin: 10px 0; line-height: 1.4; }
+  .post-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e4e6eb; }
+  .profile-header { text-align: center; padding: 20px; }
+  .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px; }
+  .profile-name { display: flex; align-items: center; justify-content: center; gap: 5px; }
+  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 4px rgba(0,0,0,0.1); z-index: 100; }
+  .nav-icon { padding: 8px 16px; cursor: pointer; font-size: 24px; position: relative; text-align: center; }
+  .nav-icon.active { color: #1877f2; }
+  .nav-icon span { display: block; font-size: 11px; }
+  .badge { position: absolute; top: 2px; right: 8px; background: #e41e3f; color: white; border-radius: 10px; padding: 2px 6px; font-size: 11px; min-width: 18px; text-align: center; }
+  .search-result { padding: 10px; border-bottom: 1px solid #e4e6eb; cursor: pointer; display: flex; align-items: center; }
+  .search-result:hover { background: #f0f2f5; }
+  .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
+  .modal.active { display: flex; align-items: center; justify-content: center; }
+  .modal-content { background: white; width: 90%; max-width: 500px; max-height: 80vh; border-radius: 8px; display: flex; flex-direction: column; }
+  .modal-header { padding: 15px; border-bottom: 1px solid #e4e6eb; display: flex; justify-content: space-between; align-items: center; }
+  .message { margin: 8px 0; display: flex; flex-direction: column; }
+  .message.sent { align-items: flex-end; }
+  .message.received { align-items: flex-start; }
+  .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 18px; word-wrap: break-word; }
+  .message.sent .message-bubble { background: #1877f2; color: white; }
+  .message.received .message-bubble { background: #e4e6eb; color: black; }
+  .message-time { font-size: 11px; color: #65676b; margin-top: 2px; }
+  .custom-alert { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+  .alert-box { background: white; padding: 20px; border-radius: 8px; max-width: 300px; text-align: center; }
+  .unread-badge { position: absolute; top: -5px; right: -5px; background: #e41e3f; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+  .edit-box { display: none; margin-top: 10px; }
+  .edit-box textarea { margin: 5px 0; }
+  .friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #ffc107; }
+  .friend-tag { background: #42b72a; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; }
+  .group-item { padding:10px;background:white;border:1px solid #ddd;border-radius:6px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center; }
+  .group-item:hover { background: #f0f2f5; }
   </style>
 </head>
 <body>
@@ -79,7 +78,7 @@
   </div>
 
   <div id="app" style="display:none;">
-        <div id="homePage" class="page active">
+    <div id="homePage" class="page active">
       <div class="card">
         <div class="header">
           <h2>OxieBook</h2>
@@ -104,8 +103,7 @@
         <div id="posts"></div>
       </div>
     </div>
-
-    <div id="searchPage" class="page">
+        <div id="searchPage" class="page">
       <div class="card">
         <button onclick="showPage('homePage')" class="btn-back">← Back</button>
         <h3>Search Users</h3>
@@ -128,7 +126,9 @@
         <button onclick="showPage('homePage')" class="btn-back">← Back</button>
         <div class="profile-header">
           <img id="userAvatar" class="profile-avatar" src="https://via.placeholder.com/80" />
-          <h2 id="userName" style="margin: 10px 0 5px 0;"></h2>
+          <div class="profile-name">
+            <h2 id="userName" style="margin: 10px 0 5px 0;"></h2>
+          </div>
           <div id="userBio" class="bio"></div>
         </div>
         <input type="text" id="nameInput" placeholder="Naam badlo" />
@@ -144,7 +144,9 @@
         <button class="btn-back" onclick="showPage('homePage')">← Back</button>
         <div class="profile-header">
           <img id="viewProfileAvatar" class="profile-avatar" src="https://via.placeholder.com/80" />
-          <h2 id="viewProfileName" style="margin: 10px 0 5px 0;"></h2>
+          <div class="profile-name">
+            <h2 id="viewProfileName" style="margin: 10px 0 5px 0;"></h2>
+          </div>
           <div id="viewProfileBio" class="bio"></div>
           <div id="friendStatusTag"></div>
           <button id="friendActionBtn" class="btn-small" style="display:none; margin-top:10px;"></button>
@@ -156,6 +158,7 @@
             <div class="stat-label">Posts</div>
           </div>
         </div>
+      </div>
       <div class="card">
         <h3>Posts</h3>
         <div id="viewProfilePosts"></div>
@@ -187,7 +190,10 @@
         <button onclick="backToChatList()" class="btn-small">← Back</button>
         <div style="display:flex;align-items:center;gap:10px;">
           <img id="chatWindowAvatar" src="" class="avatar" style="width:35px;height:35px;" />
-          <h3 id="chatWindowName" style="margin:0;"></h3>
+          <div style="display:flex;align-items:center;">
+            <h3 id="chatWindowName" style="margin:0;"></h3>
+            <span id="chatWindowVerified"></span>
+          </div>
         </div>
       </div>
       <div id="chatMessages" style="flex:1;overflow-y:auto;padding:10px;background:#f0f2f5;"></div>
@@ -237,7 +243,7 @@
       </div>
     </div>
   </div>
-  <script type="module">
+    <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
     const SUPABASE_URL = 'https://gxpjfxiukyubpnnuqrzw.supabase.co'
@@ -252,7 +258,6 @@
     let messageSubscription = null
     let groupMessageSubscription = null
 
-    // ========== UTILITY FUNCTIONS ==========
     window.showAlert = (msg) => {
       document.getElementById('alertMsg').innerText = msg
       document.getElementById('promptInput').style.display = 'none'
@@ -288,7 +293,6 @@
       if (navMap[pageId]!== undefined) document.querySelectorAll('.nav-icon')[navMap[pageId]].classList.add('active')
     }
 
-    // ========== AUTH ==========
     document.getElementById('toggleBtn').addEventListener('click', () => {
       isLogin =!isLogin
       document.getElementById('loginBtn').textContent = isLogin? 'Log In' : 'Sign Up'
@@ -335,7 +339,6 @@
       })
     })
 
-    // ========== PROFILE ==========
     document.getElementById('dpBtn').addEventListener('click', () => document.getElementById('fileInput').click())
     document.getElementById('fileInput').addEventListener('change', async (e) => {
       const file = e.target.files[0]
@@ -390,7 +393,6 @@
       loadHomeGroups()
     }
 
-    // ========== POSTS ==========
     document.getElementById('postBtn').addEventListener('click', async () => {
       const content = document.getElementById('postContent').value.trim()
       if (!content) return showAlert('Kuch to likh bhai')
@@ -434,7 +436,7 @@
     }
 
     async function loadPosts() {
-      const { data, error } = await supabase.from('posts').select(`*, profiles:user_id (name, is_verified, avatar_url), likes:likes (user_id)`).order('created_at', { ascending: false }).limit(50)
+      const { data, error } = await supabase.from('posts').select(`*, profiles!posts_user_id_fkey(name, is_verified, avatar_url), likes:likes (user_id)`).order('created_at', { ascending: false })
       if (error) return document.getElementById('posts').innerHTML = `<p style="color:red">Error: ${error.message}</p>`
       if (!data || data.length === 0) return document.getElementById('posts').innerHTML = '<p>Abhi koi post nahi hai.</p>'
       document.getElementById('posts').innerHTML = data.map(post => renderPost(post)).join('')
@@ -471,8 +473,7 @@
       navigator.clipboard.writeText(`${content}\n\n- Shared from OxieBook: ${window.location.href}`)
       showAlert('Link copied! Share kar de')
     }
-        // ========== SEARCH & PROFILES ==========
-    document.getElementById('searchInput').addEventListener('input', async (e) => {
+          document.getElementById('searchInput').addEventListener('input', async (e) => {
       const query = e.target.value.trim()
       if (query.length < 2) return document.getElementById('searchResults').innerHTML = ''
       const { data } = await supabase.from('profiles').select('id, name, is_verified, avatar_url').ilike('name', `%${query}%`).limit(10)
@@ -495,13 +496,13 @@
       const friendBtn = document.getElementById('friendActionBtn')
       const msgBtn = document.getElementById('messageUserBtn')
       const statusTag = document.getElementById('friendStatusTag')
-      
+
       if (userId!== currentUserId) {
         const { data: friendData } = await supabase.from('friends').select('*').or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${currentUserId})`).single()
         friendBtn.style.display = 'inline-block'
         msgBtn.style.display = 'inline-block'
-        msgBtn.onclick = () => openChatWindow(userId, profile.name, profile.avatar_url || 'https://via.placeholder.com/40')
-        
+        msgBtn.onclick = () => openChatWindow(userId, profile.name, profile.avatar_url || 'https://via.placeholder.com/40', profile.is_verified)
+
         if (!friendData) {
           friendBtn.textContent = '➕ Add Friend'
           friendBtn.onclick = () => sendFriendRequest(userId, profile.name)
@@ -512,14 +513,17 @@
           friendBtn.disabled = true
           statusTag.innerHTML = ''
         } else if (friendData.status === 'pending' && friendData.receiver_id === currentUserId) {
-          friendBtn.textContent = 'Accept Request'
-          friendBtn.onclick = () => acceptFriendRequest(friendData.id)
-          friendBtn.disabled = false
+          friendBtn.textContent = 'Request Sent'
+          friendBtn.disabled = true
           statusTag.innerHTML = ''
         } else if (friendData.status === 'accepted') {
-          friendBtn.textContent = '✓ Friends'
-          friendBtn.disabled = true
+          friendBtn.style.display = 'none'
           statusTag.innerHTML = '<span class="friend-tag">Friend</span>'
+        } else {
+          friendBtn.textContent = '➕ Add Friend'
+          friendBtn.onclick = () => sendFriendRequest(userId, profile.name)
+          friendBtn.disabled = false
+          statusTag.innerHTML = ''
         }
       } else {
         friendBtn.style.display = 'none'
@@ -527,12 +531,11 @@
         statusTag.innerHTML = ''
       }
 
-      const { data: posts } = await supabase.from('posts').select(`*, profiles:user_id (name, is_verified, avatar_url), likes:likes (user_id)`).eq('user_id', userId).order('created_at', { ascending: false })
-      document.getElementById('viewPostCount').textContent = posts.length
-      document.getElementById('viewProfilePosts').innerHTML = posts.map(post => renderPost(post)).join('') || '<p>No posts yet.</p>'
+      const { data: posts } = await supabase.from('posts').select('*, profiles!posts_user_id_fkey(name, is_verified, avatar_url), likes:likes (user_id)').eq('user_id', userId).order('created_at', { ascending: false })
+      document.getElementById('viewPostCount').textContent = posts?.length || 0
+      document.getElementById('viewProfilePosts').innerHTML = posts?.map(post => renderPost(post)).join('') || '<p>No posts yet</p>'
     }
 
-    // ========== FRIENDS ==========
     window.sendFriendRequest = async (receiverId, receiverName) => {
       if (receiverId === currentUserId) return showAlert('Khud ko request? 😂')
       const { error } = await supabase.from('friends').insert({ sender_id: currentUserId, receiver_id: receiverId, status: 'pending' })
@@ -565,7 +568,6 @@
       loadFriendRequests()
     }
 
-    // ========== HOME GROUPS + QUICK MSG ==========
     async function loadHomeGroups() {
       const { data: groups } = await supabase
        .from('group_members')
@@ -578,8 +580,8 @@
         return
       }
       groupDiv.innerHTML = groups.slice(0,3).map(g => `
-        <div onclick="openGroupChat('${g.groups.id}', '${g.groups.name}')" style="padding:8px;background:white;border:1px solid #ddd;border-radius:6px;margin-bottom:6px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
-          <span>👥 ${g.groups.name}</span>
+        <div class="group-item">
+          <span onclick="openGroupChat('${g.groups.id}', '${g.groups.name}')" style="flex:1;">👥 ${g.groups.name}</span>
           <button class="btn-small btn-message" onclick="event.stopPropagation(); openGroupChat('${g.groups.id}', '${g.groups.name}')">💬</button>
         </div>
       `).join('')
@@ -588,11 +590,11 @@
     document.getElementById('quickMsgInput').addEventListener('input', async (e) => {
       const query = e.target.value.trim()
       if (query.length < 2) return document.getElementById('quickMsgResults').innerHTML = ''
-      const { data } = await supabase.from('profiles').select('id, name, avatar_url').ilike('name', `%${query}%`).neq('id', currentUserId).limit(3)
+      const { data } = await supabase.from('profiles').select('id, name, avatar_url, is_verified').ilike('name', `%${query}%`).neq('id', currentUserId).limit(3)
       document.getElementById('quickMsgResults').innerHTML = data.map(u => `
-        <div onclick="openChatWindow('${u.id}', '${u.name}', '${u.avatar_url || 'https://via.placeholder.com/40'}')" style="padding:6px;background:white;border-radius:4px;margin:4px 0;cursor:pointer;font-size:14px;">
+        <div onclick="openChatWindow('${u.id}', '${u.name}', '${u.avatar_url || 'https://via.placeholder.com/40'}', ${u.is_verified})" style="padding:6px;background:white;border-radius:4px;margin:4px 0;cursor:pointer;font-size:14px;">
           <img src="${u.avatar_url || 'https://via.placeholder.com/40'}" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:5px;" />
-          ${u.name}
+          ${u.name} ${u.is_verified? '<span class="verified">✓</span>' : ''}
         </div>
       `).join('')
     })
@@ -601,7 +603,6 @@
       showAlert('Pehle user select karo search se')
     }
 
-    // ========== 1-TO-1 CHAT ==========
     window.openChatList = () => {
       document.getElementById('chatListModal').classList.add('active')
       loadChatUsers()
@@ -619,7 +620,7 @@
       const { data: friends } = await supabase.from('friends').select('sender_id, receiver_id').or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`).eq('status', 'accepted')
       const friendIds = friends?.map(f => f.sender_id === currentUserId ? f.receiver_id : f.sender_id) || []
       
-      const { data: profiles } = await supabase.from('profiles').select('*').neq('id', currentUserId).limit(100)
+      const { data: profiles } = await supabase.from('profiles').select('*').neq('id', currentUserId)
       const userList = document.getElementById('chatUserList')
       if (!profiles || profiles.length === 0) {
         userList.innerHTML = '<div style="text-align:center;color:#65676b;margin-top:30px;">Koi user nahi mila</div>'
@@ -632,24 +633,24 @@
         const unreadCount = unread?.length || 0
         const isFriend = friendIds.includes(profile.id)
         userList.innerHTML += `
-          <div class="search-result" onclick="openChatWindow('${profile.id}', '${profile.name}', '${profile.avatar_url || 'https://via.placeholder.com/40'}')">
+          <div class="search-result" onclick="openChatWindow('${profile.id}', '${profile.name}', '${profile.avatar_url || 'https://via.placeholder.com/40'}', ${profile.is_verified})">
             <div style="position:relative;">
               <img src="${profile.avatar_url || 'https://via.placeholder.com/40'}" class="avatar" style="width:40px;height:40px;" />
               ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
             </div>
             <div style="flex:1;">
-              <div style="font-weight:bold;">${profile.name} ${profile.is_verified? '<span class="verified">✓</span>' : ''} ${isFriend ? '<span class="friend-tag">Friend</span>' : ''}</div>
+              <div style="font-weight:bold;display:flex;align-items:center;">${profile.name} ${profile.is_verified? '<span class="verified">✓</span>' : ''} ${isFriend ? '<span class="friend-tag">Friend</span>' : ''}</div>
               <div style="font-size:12px;color:#65676b;">Tap to message</div>
             </div>
           </div>
         `
       }
     }
-
-    window.openChatWindow = async (userId, name, avatar) => {
-      selectedChatUser = { id: userId, name, avatar }
+          window.openChatWindow = async (userId, name, avatar, isVerified) => {
+      selectedChatUser = { id: userId, name, avatar, is_verified: isVerified }
       document.getElementById('chatWindowName').textContent = name
       document.getElementById('chatWindowAvatar').src = avatar
+      document.getElementById('chatWindowVerified').innerHTML = isVerified ? '<span class="verified">✓</span>' : ''
       document.getElementById('chatListModal').classList.remove('active')
       document.getElementById('chatWindowModal').classList.add('active')
       await markMessagesAsSeen(userId)
@@ -661,7 +662,7 @@
     async function loadMessages() {
       const { data: messages } = await supabase.from('messages').select('*')
         .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${selectedChatUser.id}),and(sender_id.eq.${selectedChatUser.id},receiver_id.eq.${currentUserId})`)
-        .order('created_at', { ascending: true }).limit(1000)
+        .order('created_at', { ascending: true })
       const messagesDiv = document.getElementById('chatMessages')
       messagesDiv.innerHTML = ''
       if (!messages || messages.length === 0) {
@@ -730,7 +731,6 @@
 
     setInterval(checkUnreadMessages, 5000)
 
-    // ========== GROUP CHAT ==========
     window.openGroupList = () => {
       document.getElementById('groupListModal').classList.add('active')
       loadUserGroups()
@@ -793,13 +793,11 @@
       loadGroupMessages()
       subscribeToGroupMessages()
     }
-
-    async function loadGroupMessages() {
-      const { data: messages } = await supabase.from('messages')
-        .select('*, profiles:sender_id(name, avatar_url)')
+          async function loadGroupMessages() {
+      const { data: messages } = await supabase.from('group_messages')
+        .select('*, profiles!group_messages_sender_id_fkey(name, is_verified)')
         .eq('group_id', selectedGroup.id)
         .order('created_at', { ascending: true })
-        .limit(1000)
       
       const messagesDiv = document.getElementById('groupMessages')
       messagesDiv.innerHTML = ''
@@ -811,7 +809,7 @@
         const isMine = msg.sender_id === currentUserId
         messagesDiv.innerHTML += `
           <div class="message ${isMine ? 'sent' : 'received'}">
-            ${!isMine ? `<div style="font-size:11px;color:#65676b;margin-bottom:2px;">${msg.profiles?.name || 'User'}</div>` : ''}
+            <div style="font-size:12px;color:#65676b;margin-bottom:2px;">${msg.profiles.name} ${msg.profiles.is_verified ? '<span class="verified">✓</span>' : ''}</div>
             <div class="message-bubble">
               <div>${msg.content}</div>
               <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('hi-IN', {hour: '2-digit', minute: '2-digit'})}</div>
@@ -824,13 +822,8 @@
 
     async function subscribeToGroupMessages() {
       if (groupMessageSubscription) groupMessageSubscription.unsubscribe()
-      groupMessageSubscription = supabase.channel('group-messages-' + selectedGroup.id)
-        .on('postgres_changes', { 
-          event: 'INSERT', 
-          schema: 'public', 
-          table: 'messages',
-          filter: `group_id=eq.${selectedGroup.id}`
-        }, () => {
+      groupMessageSubscription = supabase.channel('group_messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'group_messages', filter: `group_id=eq.${selectedGroup.id}` }, () => {
           loadGroupMessages()
         }).subscribe()
     }
@@ -843,49 +836,53 @@
     async function sendGroupMessage() {
       const input = document.getElementById('groupMessageInput')
       const content = input.value.trim()
-      if (!content) return
-      const { count } = await supabase.from('group_members').select('*', { count: 'exact', head: true }).eq('group_id', selectedGroup.id)
-      if (count >= 250) return showAlert('Group full ho gaya! Max 250 members')
-      const { error } = await supabase.from('messages').insert({
+      if (!content || !selectedGroup) return
+      const { error } = await supabase.from('group_messages').insert({
         content: content,
-        sender_id: currentUserId,
-        group_id: selectedGroup.id
+        group_id: selectedGroup.id,
+        sender_id: currentUserId
       })
       if (error) showAlert('Error: ' + error.message)
       else input.value = ''
     }
 
     window.showGroupMembers = async () => {
-      const { data: members } = await supabase.from('group_members').select('profiles:user_id(name, avatar_url, id)').eq('group_id', selectedGroup.id)
-      let memberList = members.map(m => `• ${m.profiles.name}`).join('\n')
-      showPrompt(`Group Members (${members.length}/250):\n\n${memberList}\n\nAdd karne ke liye User ID daalo:`, async (userIdToAdd) => {
-        if (!userIdToAdd) return
+      const { data: members } = await supabase.from('group_members')
+        .select('profiles!group_members_user_id_fkey(id, name, is_verified)')
+        .eq('group_id', selectedGroup.id)
+      
+      const memberList = members.map(m => `${m.profiles.name} ${m.profiles.is_verified ? '✓' : ''}`).join('\n')
+      showPrompt(`Members:\n${memberList}\n\nNaya member add karne ke liye user ID daalo:`, async (userId) => {
+        if (!userId) return
         const { count } = await supabase.from('group_members').select('*', { count: 'exact', head: true }).eq('group_id', selectedGroup.id)
-        if (count >= 250) return showAlert('Group full hai bhai!')
-        const { error } = await supabase.from('group_members').insert({ group_id: selectedGroup.id, user_id: userIdToAdd })
+        if (count >= 250) return showAlert('Group full hai! 250 limit reached')
+        const { error } = await supabase.from('group_members').insert({ group_id: selectedGroup.id, user_id: userId })
         if (error) showAlert('Error: ' + error.message)
         else {
           showAlert('Member add ho gaya!')
-          openGroupChat(selectedGroup.id, selectedGroup.name)
+          const { count: newCount } = await supabase.from('group_members').select('*', { count: 'exact', head: true }).eq('group_id', selectedGroup.id)
+          document.getElementById('groupMemberCount').textContent = `${newCount}/250 members`
         }
       })
     }
-        // ========== AUTH STATE ==========
-    supabase.auth.onAuthStateChange((event, session) => {
+
+    supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
         document.getElementById('auth-form').style.display = 'none'
         document.getElementById('app').style.display = 'block'
         document.getElementById('bottomNav').style.display = 'flex'
-        getProfile()
-        loadPosts()
+        currentUserId = session.user.id
+        await getProfile()
+        await loadPosts()
         showPage('homePage')
-        checkUnreadMessages()
       } else {
         document.getElementById('auth-form').style.display = 'block'
         document.getElementById('app').style.display = 'none'
         document.getElementById('bottomNav').style.display = 'none'
         currentUserId = null
         currentUser = null
+        if (messageSubscription) messageSubscription.unsubscribe()
+        if (groupMessageSubscription) groupMessageSubscription.unsubscribe()
       }
     })
 
@@ -894,6 +891,7 @@
         document.getElementById('auth-form').style.display = 'none'
         document.getElementById('app').style.display = 'block'
         document.getElementById('bottomNav').style.display = 'flex'
+        currentUserId = session.user.id
         getProfile()
         loadPosts()
         showPage('homePage')
