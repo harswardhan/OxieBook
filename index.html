@@ -1,173 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2563eb">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>OxieBook</title>
   <style>
-    body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 0 0 70px 0; }
-  .container { max-width: 500px; margin: 0 auto; padding: 20px; }
-  .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
-    h2 { text-align: center; color: #1877f2; margin: 0 0 15px 0; }
-    input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-family: Arial; }
-    button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    body { background: #f0f2f5; color: #1c1e21; padding-bottom: 70px; }
+   .auth-container { max-width: 400px; margin: 60px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+   .auth-container h1 { color: #1877f2; text-align: center; margin-bottom: 20px; font-size: 32px; }
+    input, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+    button { width: 100%; padding: 12px; background: #1877f2; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin: 8px 0; }
     button:hover { background: #166fe5; }
-  .btn-small { width: auto; padding: 6px 12px; font-size: 14px; margin: 0; }
-  .btn-like { background: #e4e6eb; color: #050505; }
-  .btn-liked { background: #1877f2; color: white; }
-  .btn-back { background: #e4e6eb; color: #050505; margin-bottom: 10px; }
-  .btn-delete { background: #e41e3f; }
-  .btn-edit { background: #31a24c; }
-  .link { text-align: center; margin-top: 15px; color: #1877f2; cursor: pointer; }
-  .error { color: red; font-size: 14px; margin-top: 10px; text-align: center; }
-  .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-  .post { border-bottom: 1px solid #eee; padding: 15px 0; }
-  .post:last-child { border-bottom: none; }
-  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-  .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: #ddd; cursor: pointer; }
-  .avatar-large { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #ddd; }
-  .post-name { font-weight: bold; color: #050505; font-size: 15px; display: flex; align-items: center; gap: 4px; cursor: pointer; }
-  .post-name:hover { text-decoration: underline; }
-  .post-content { margin: 8px 0; color: #050505; }
-  .post-time { color: #65676b; font-size: 12px; }
-  .post-actions { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-  .verified { color: #1877f2; font-size: 16px; }
-  .search-result { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-  .search-result:hover { background: #f0f2f5; }
-  .bio { color: #65676b; font-size: 14px; margin: 5px 0; }
-  .profile-header { text-align: center; padding: 20px 0; }
-  .profile-stats { display: flex; justify-content: center; gap: 30px; margin: 15px 0; }
-  .stat { text-align: center; }
-  .stat-number { font-weight: bold; font-size: 18px; }
-  .stat-label { color: #65676b; font-size: 14px; }
-  .edit-box { display: none; margin-top: 10px; }
-  .friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
-  .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 10px 0; box-shadow: 0 -1px 5px rgba(0,0,0,0.1); z-index: 100; }
-  .nav-icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #65676b; font-size: 24px; padding: 5px 15px; }
-  .nav-icon.active { color: #1877f2; }
-  .nav-icon span { font-size: 11px; margin-top: 2px; }
-    #fileInput { display: none; }
-  .page { display: none; }
-  .page.active { display: block; }
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; }
-  .modal.active { display:flex; align-items:center; justify-content:center; }
-  .modal-content { background:white; width:90%; max-width:500px; height:80vh; border-radius:8px; display:flex; flex-direction:column; }
-  .modal-header { padding:15px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; align-items:center; }
-  .close-btn { background:none; border:none; font-size:24px; cursor:pointer; width:auto; padding:0; margin:0; }
-  .message { margin:8px 0; display:flex; }
-  .message.sent { justify-content:flex-end; }
-  .message.received { justify-content:flex-start; }
-  .message-bubble { max-width:70%; padding:10px 15px; border-radius:18px; word-wrap:break-word; }
-  .message.sent .message-bubble { background:#1877f2; color:white; }
-  .message.received .message-bubble { background:#e4e6eb; color:black; }
-  .message-time { font-size:11px; opacity:0.7; margin-top:4px; }
-  .unread-badge { position:absolute; top:-2px; right:-2px; background:#f02849; color:white; border-radius:50%; width:18px; height:18px; font-size:10px; display:flex; align-items:center; justify-content:center; font-weight:bold; }
+   .btn-small { padding: 6px 12px; font-size: 13px; width: auto; display: inline-block; margin: 4px 2px; }
+   .btn-back { background: #1877f2; color: white; margin-bottom: 10px; }
+   .btn-back:hover { background: #166fe5; }
+   .btn-like { background: #1877f2; }
+   .btn-liked { background: #e4e6eb; color: #1877f2; }
+   .btn-edit { background: #f59e0b; }
+   .btn-delete { background: #ef4444; }
+   .btn-message { background: #42b72a; }
+   .link { color: #1877f2; text-align: center; display: block; margin: 12px 0; cursor: pointer; }
+   .page { display: none; max-width: 600px; margin: 0 auto; padding: 10px; }
+   .page.active { display: block; }
+   .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+   .header h2 { color: #1877f2; font-size: 20px; }
+   .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+   .post { background: white; border-radius: 8px; padding: 15px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+   .post-header { display: flex; align-items: center; margin-bottom: 10px; }
+   .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 10px; cursor: pointer; }
+   .post-name { font-weight: 600; cursor: pointer; }
+   .verified { color: #1877f2; font-size: 12px; margin-left: 4px; }
+   .post-time { font-size: 12px; color: #65676b; }
+   .post-content { margin: 10px 0; line-height: 1.4; }
+   .post-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e4e6eb; }
+   .profile-header { text-align: center; padding: 20px; }
+   .profile-avatar { width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 10px; }
+   .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 4px rgba(0,0,0,0.1); z-index: 100; }
+   .nav-icon { padding: 8px 16px; cursor: pointer; font-size: 24px; position: relative; }
+   .nav-icon.active { color: #1877f2; }
+   .badge { position: absolute; top: 2px; right: 8px; background: #e41e3f; color: white; border-radius: 10px; padding: 2px 6px; font-size: 11px; min-width: 18px; text-align: center; }
+   .search-result { padding: 10px; border-bottom: 1px solid #e4e6eb; cursor: pointer; display: flex; align-items: center; }
+   .search-result:hover { background: #f0f2f5; }
+   .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; }
+   .modal.active { display: flex; align-items: center; justify-content: center; }
+   .modal-content { background: white; width: 90%; max-width: 500px; max-height: 80vh; border-radius: 8px; display: flex; flex-direction: column; }
+   .modal-header { padding: 15px; border-bottom: 1px solid #e4e6eb; display: flex; justify-content: space-between; align-items: center; }
+   .modal-body { flex: 1; overflow-y: auto; padding: 15px; }
+   .modal-footer { padding: 15px; border-top: 1px solid #e4e6eb; }
+   .message { margin: 8px 0; display: flex; flex-direction: column; }
+   .message.sent { align-items: flex-end; }
+   .message.received { align-items: flex-start; }
+   .message-bubble { max-width: 70%; padding: 8px 12px; border-radius: 18px; word-wrap: break-word; }
+   .message.sent.message-bubble { background: #1877f2; color: white; }
+   .message.received.message-bubble { background: #e4e6eb; color: black; }
+   .message-time { font-size: 11px; color: #65676b; margin-top: 2px; }
+   .chat-input { display: flex; gap: 8px; }
+   .chat-input input { flex: 1; margin: 0; }
+   .chat-input button { width: auto; margin: 0; padding: 10px 20px; }
+   .custom-alert { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+   .alert-box { background: white; padding: 20px; border-radius: 8px; max-width: 300px; text-align: center; }
+   .unread-badge { position: absolute; top: -5px; right: -5px; background: #e41e3f; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+   .edit-box { display: none; margin-top: 10px; }
+   .edit-box textarea { margin: 5px 0; }
+   .friend-requests-box { background: #fff3cd; padding: 10px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #ffc107; }
+   .friend-tag { background: #42b72a; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Login/Signup -->
-    <div class="card" id="auth-form">
-      <h2>OxieBook</h2>
-      <input type="email" id="email" placeholder="Email" />
-      <input type="password" id="password" placeholder="Password" />
-      <button id="loginBtn">Log In</button>
-      <div class="link" id="toggleBtn">Naya account banaye</div>
-      <div class="link" id="forgotBtn">Password bhool gaya?</div>
-      <div class="error" id="error"></div>
+  <div id="auth-form" class="auth-container">
+    <h1>OxieBook</h1>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="loginBtn">Log In</button>
+    <span class="link" id="toggleBtn">Naya account banaye</span>
+    <span class="link" id="forgotBtn">Password bhool gaye?</span>
+    <p id="error" style="color:red;text-align:center;"></p>
+  </div>
+
+  <div id="app" style="display:none;">
+        <div id="homePage" class="page active">
+      <div class="card">
+        <div class="header">
+          <h2>OxieBook</h2>
+          <button id="logoutBtn" class="btn-small">Logout</button>
+        </div>
+        <div id="friendRequestsBox" class="friend-requests-box" style="display:none;"></div>
+        <div style="margin-bottom:15px;padding-bottom:15px;border-bottom:1px solid #eee;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <h3 style="margin:0;">Your Groups</h3>
+            <button onclick="createGroupPrompt()" class="btn-small">➕ New</button>
+          </div>
+          <div id="homeGroupList"></div>
+        </div>
+        <div style="margin-bottom:15px;padding:12px;background:#f0f2f5;border-radius:8px;">
+          <div style="font-weight:bold;margin-bottom:8px;">💬 Quick Message</div>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="quickMsgInput" placeholder="Kisko bhejna hai? Search karo..." style="flex:1;margin:0;padding:10px;" />
+            <button onclick="sendQuickMessage()" class="btn-small" style="margin:0;">Send</button>
+          </div>
+          <div id="quickMsgResults" style="margin-top:8px;"></div>
+        </div>
+        <div id="posts"></div>
+      </div>
     </div>
 
-    <!-- Main App -->
-    <div id="app" style="display: none;">
-      <!-- Home/Feed Page -->
-      <div id="homePage" class="page active">
-        <div class="card">
-          <div class="header">
-            <h2>OxieBook</h2>
-            <button id="logoutBtn" class="btn-small">Logout</button>
-          </div>
-          <div id="friendRequestsBox" class="friend-requests-box" style="display:none;"></div>
-          <div id="posts"></div>
-        </div>
+    <div id="searchPage" class="page">
+      <div class="card">
+        <button onclick="showPage('homePage')" class="btn-back">← Back</button>
+        <h3>Search Users</h3>
+        <input type="text" id="searchInput" placeholder="Naam se search karo..." />
+        <div id="searchResults"></div>
       </div>
+    </div>
 
-      <!-- Search Page -->
-      <div id="searchPage" class="page">
-        <div class="card">
-          <h3>Search Users</h3>
-          <input type="text" id="searchInput" placeholder="Naam se search karo..." />
-          <div id="searchResults"></div>
-        </div>
+    <div id="postPage" class="page">
+      <div class="card">
+        <button onclick="showPage('homePage')" class="btn-back">← Back</button>
+        <h3>Create Post</h3>
+        <textarea id="postContent" placeholder="Kya soch rahe ho?"></textarea>
+        <button id="postBtn">Post Karo</button>
       </div>
+    </div>
 
-      <!-- Create Post Page -->
-      <div id="postPage" class="page">
-        <div class="card">
-          <h3>Create Post</h3>
-          <textarea id="postContent" placeholder="Kya soch rahe ho?"></textarea>
-          <button id="postBtn">Post Karo</button>
+    <div id="myProfilePage" class="page">
+      <div class="card">
+        <button onclick="showPage('homePage')" class="btn-back">← Back</button>
+        <div class="profile-header">
+          <img id="userAvatar" class="profile-avatar" src="https://via.placeholder.com/80" />
+          <h2 id="userName" style="margin: 10px 0 5px 0;"></h2>
+          <div id="userBio" class="bio"></div>
         </div>
+        <input type="text" id="nameInput" placeholder="Naam badlo" />
+        <input type="text" id="bioInput" placeholder="Bio likho" />
+        <input type="file" id="fileInput" accept="image/*" />
+        <button id="dpBtn" class="btn-small">DP Upload</button>
+        <button id="saveProfileBtn">Profile Save Karo</button>
       </div>
+    </div>
 
-      <!-- My Profile Page -->
-      <div id="myProfilePage" class="page">
-        <div class="card">
-          <div class="profile-header">
-            <img id="userAvatar" class="avatar-large" src="https://via.placeholder.com/80" />
-            <h2 id="userName" style="margin: 10px 0 5px 0;"></h2>
-            <div id="userBio" class="bio"></div>
-          </div>
-          <input type="text" id="nameInput" placeholder="Naam badlo" />
-          <input type="text" id="bioInput" placeholder="Bio likho" />
-          <input type="file" id="fileInput" accept="image/*" />
-          <button id="dpBtn" class="btn-small">DP Upload</button>
-          <button id="saveProfileBtn">Profile Save Karo</button>
+    <div id="viewProfilePage" class="page">
+      <div class="card">
+        <button class="btn-back" onclick="showPage('homePage')">← Back</button>
+        <div class="profile-header">
+          <img id="viewProfileAvatar" class="profile-avatar" src="https://via.placeholder.com/80" />
+          <h2 id="viewProfileName" style="margin: 10px 0 5px 0;"></h2>
+          <div id="viewProfileBio" class="bio"></div>
+          <div id="friendStatusTag"></div>
+          <button id="friendActionBtn" class="btn-small" style="display:none; margin-top:10px;"></button>
+          <button id="messageUserBtn" class="btn-small btn-message" style="display:none; margin-top:10px;">💬 Message</button>
         </div>
-      </div>
-
-      <!-- View Other Profile Page -->
-      <div id="viewProfilePage" class="page">
-        <div class="card">
-          <button class="btn-back" onclick="showPage('homePage')">← Back</button>
-          <div class="profile-header">
-            <img id="viewProfileAvatar" class="avatar-large" src="https://via.placeholder.com/80" />
-            <h2 id="viewProfileName" style="margin: 10px 0 5px 0;"></h2>
-            <div id="viewProfileBio" class="bio"></div>
-            <button id="friendActionBtn" class="btn-small" style="display:none; margin-top:10px;"></button>
+        <div class="profile-stats">
+          <div class="stat">
+            <div class="stat-number" id="viewPostCount">0</div>
+            <div class="stat-label">Posts</div>
           </div>
-          <div class="profile-stats">
-            <div class="stat">
-              <div class="stat-number" id="viewPostCount">0</div>
-              <div class="stat-label">Posts</div>
-            </div>
-          </div>
-        <div class="card">
-          <h3>Posts</h3>
-          <div id="viewProfilePosts"></div>
         </div>
+      <div class="card">
+        <h3>Posts</h3>
+        <div id="viewProfilePosts"></div>
       </div>
     </div>
   </div>
-    <!-- Bottom Navigation -->
+
   <div class="bottom-nav" id="bottomNav" style="display: none;">
     <div class="nav-icon active" onclick="showPage('homePage')">🏠<span>Home</span></div>
     <div class="nav-icon" onclick="showPage('searchPage')">🔍<span>Search</span></div>
     <div class="nav-icon" onclick="showPage('postPage')">➕<span>Post</span></div>
-    <div class="nav-icon" onclick="openGroupList()">👥<span>Groups</span></div>
     <div class="nav-icon" onclick="showPage('myProfilePage')">👤<span>Profile</span></div>
+    <div class="nav-icon" onclick="openChatList()" style="position:relative;">💬<span>Chat</span><span id="chatUnreadBadge" class="badge" style="display:none;"></span></div>
   </div>
 
-  <!-- Chat Icon -->
-  <div id="chatIcon" onclick="openChatList()" style="position:fixed;top:15px;right:15px;z-index:100;">
-    <button style="background:#1877f2;color:white;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;position:relative;">
-      💬
-      <span id="chatUnreadBadge" style="position:absolute;top:-5px;right:-5px;background:red;color:white;border-radius:50%;width:20px;height:20px;font-size:12px;display:none;align-items:center;justify-content:center;"></span>
-    </button>
-  </div>
-
-  <!-- Chat List Modal -->
   <div id="chatListModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -178,7 +181,6 @@
     </div>
   </div>
 
-  <!-- Chat Window Modal -->
   <div id="chatWindowModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -187,6 +189,7 @@
           <img id="chatWindowAvatar" src="" class="avatar" style="width:35px;height:35px;" />
           <h3 id="chatWindowName" style="margin:0;"></h3>
         </div>
+      </div>
       <div id="chatMessages" style="flex:1;overflow-y:auto;padding:10px;background:#f0f2f5;"></div>
       <div style="display:flex;padding:10px;gap:8px;background:white;">
         <input type="text" id="chatMessageInput" placeholder="Message..." style="flex:1;padding:10px;border:1px solid #ddd;border-radius:20px;margin:0;" />
@@ -195,7 +198,6 @@
     </div>
   </div>
 
-  <!-- Group List Modal -->
   <div id="groupListModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -207,7 +209,6 @@
     </div>
   </div>
 
-  <!-- Group Chat Modal -->
   <div id="groupChatModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -226,11 +227,9 @@
     </div>
   </div>
 
-  <!-- Custom Popup -->
-  <div id="customAlert" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: #0d47a1; color: white; padding: 25px; border-radius: 12px; max-width: 300px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-      <h3 style="margin: 0 0 12px 0; color: #bbdefb;">OxieBook</h3>
-      <p id="alertMsg" style="margin: 0 0 18px 0; color: white;"></p>
+  <div id="customAlert" class="custom-alert">
+    <div class="alert-box">
+      <p id="alertMsg"></p>
       <input type="text" id="promptInput" placeholder="Apna input daalo" style="display: none; width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 5px; border: none; box-sizing: border-box;" />
       <div>
         <button id="alertOkBtn" style="background: #1976d2; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; margin: 0 5px;">OK</button>
@@ -285,7 +284,7 @@
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
       document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'))
       document.getElementById(pageId).classList.add('active')
-      const navMap = { 'homePage': 0, 'searchPage': 1, 'postPage': 2, 'myProfilePage': 4 }
+      const navMap = { 'homePage': 0, 'searchPage': 1, 'postPage': 2, 'myProfilePage': 3 }
       if (navMap[pageId]!== undefined) document.querySelectorAll('.nav-icon')[navMap[pageId]].classList.add('active')
     }
 
@@ -304,7 +303,16 @@
       try {
         let result = isLogin? await supabase.auth.signInWithPassword({ email, password }) : await supabase.auth.signUp({ email, password })
         if (result.error) throw result.error
-        if (!isLogin &&!result.data.session) document.getElementById('error').textContent = 'Signup ho gaya! Email verify kar ke Login kar'
+        if (!isLogin && result.data.user) {
+          await supabase.from('profiles').insert({
+            id: result.data.user.id,
+            name: email.split('@')[0]
+          })
+          document.getElementById('error').textContent = 'Signup ho gaya! Login kar'
+          isLogin = true
+          document.getElementById('loginBtn').textContent = 'Log In'
+          document.getElementById('toggleBtn').textContent = 'Naya account banaye'
+        }
       } catch (err) {
         document.getElementById('error').textContent = err.message
       }
@@ -360,7 +368,15 @@
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
       currentUserId = user.id
-      const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+      let { data } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+      if (!data) {
+        await supabase.from('profiles').insert({
+          id: user.id,
+          name: user.email.split('@')[0]
+        })
+        const { data: newData } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+        data = newData
+      }
       currentUser = data
       if (data) {
         document.getElementById('userName').innerHTML = `${data.name || 'User'} ${data.is_verified? '<span class="verified">✓</span>' : ''}`
@@ -371,6 +387,7 @@
       }
       loadFriendRequests()
       checkUnreadMessages()
+      loadHomeGroups()
     }
 
     // ========== POSTS ==========
@@ -476,26 +493,38 @@
       document.getElementById('viewProfileBio').textContent = profile.bio || 'No bio yet'
 
       const friendBtn = document.getElementById('friendActionBtn')
+      const msgBtn = document.getElementById('messageUserBtn')
+      const statusTag = document.getElementById('friendStatusTag')
+      
       if (userId!== currentUserId) {
         const { data: friendData } = await supabase.from('friends').select('*').or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${userId}),and(sender_id.eq.${userId},receiver_id.eq.${currentUserId})`).single()
         friendBtn.style.display = 'inline-block'
+        msgBtn.style.display = 'inline-block'
+        msgBtn.onclick = () => openChatWindow(userId, profile.name, profile.avatar_url || 'https://via.placeholder.com/40')
+        
         if (!friendData) {
           friendBtn.textContent = '➕ Add Friend'
           friendBtn.onclick = () => sendFriendRequest(userId, profile.name)
           friendBtn.disabled = false
+          statusTag.innerHTML = ''
         } else if (friendData.status === 'pending' && friendData.sender_id === currentUserId) {
           friendBtn.textContent = 'Request Sent'
           friendBtn.disabled = true
+          statusTag.innerHTML = ''
         } else if (friendData.status === 'pending' && friendData.receiver_id === currentUserId) {
           friendBtn.textContent = 'Accept Request'
           friendBtn.onclick = () => acceptFriendRequest(friendData.id)
           friendBtn.disabled = false
+          statusTag.innerHTML = ''
         } else if (friendData.status === 'accepted') {
           friendBtn.textContent = '✓ Friends'
           friendBtn.disabled = true
+          statusTag.innerHTML = '<span class="friend-tag">Friend</span>'
         }
       } else {
         friendBtn.style.display = 'none'
+        msgBtn.style.display = 'none'
+        statusTag.innerHTML = ''
       }
 
       const { data: posts } = await supabase.from('posts').select(`*, profiles:user_id (name, is_verified, avatar_url), likes:likes (user_id)`).eq('user_id', userId).order('created_at', { ascending: false })
@@ -536,7 +565,43 @@
       loadFriendRequests()
     }
 
-    // ========== 1-TO-1 CHAT - SAB USERS DIKHENGE ==========
+    // ========== HOME GROUPS + QUICK MSG ==========
+    async function loadHomeGroups() {
+      const { data: groups } = await supabase
+       .from('group_members')
+       .select('groups(id, name)')
+       .eq('user_id', currentUserId)
+      
+      const groupDiv = document.getElementById('homeGroupList')
+      if (!groups || groups.length === 0) {
+        groupDiv.innerHTML = '<div style="color:#65676b;font-size:14px;">Koi group nahi. Naya banao!</div>'
+        return
+      }
+      groupDiv.innerHTML = groups.slice(0,3).map(g => `
+        <div onclick="openGroupChat('${g.groups.id}', '${g.groups.name}')" style="padding:8px;background:white;border:1px solid #ddd;border-radius:6px;margin-bottom:6px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+          <span>👥 ${g.groups.name}</span>
+          <button class="btn-small btn-message" onclick="event.stopPropagation(); openGroupChat('${g.groups.id}', '${g.groups.name}')">💬</button>
+        </div>
+      `).join('')
+    }
+
+    document.getElementById('quickMsgInput').addEventListener('input', async (e) => {
+      const query = e.target.value.trim()
+      if (query.length < 2) return document.getElementById('quickMsgResults').innerHTML = ''
+      const { data } = await supabase.from('profiles').select('id, name, avatar_url').ilike('name', `%${query}%`).neq('id', currentUserId).limit(3)
+      document.getElementById('quickMsgResults').innerHTML = data.map(u => `
+        <div onclick="openChatWindow('${u.id}', '${u.name}', '${u.avatar_url || 'https://via.placeholder.com/40'}')" style="padding:6px;background:white;border-radius:4px;margin:4px 0;cursor:pointer;font-size:14px;">
+          <img src="${u.avatar_url || 'https://via.placeholder.com/40'}" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;margin-right:5px;" />
+          ${u.name}
+        </div>
+      `).join('')
+    })
+
+    window.sendQuickMessage = () => {
+      showAlert('Pehle user select karo search se')
+    }
+
+    // ========== 1-TO-1 CHAT ==========
     window.openChatList = () => {
       document.getElementById('chatListModal').classList.add('active')
       loadChatUsers()
@@ -552,7 +617,7 @@
 
     async function loadChatUsers() {
       const { data: friends } = await supabase.from('friends').select('sender_id, receiver_id').or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`).eq('status', 'accepted')
-      const friendIds = friends?.map(f => f.sender_id === currentUserId? f.receiver_id : f.sender_id) || []
+      const friendIds = friends?.map(f => f.sender_id === currentUserId ? f.receiver_id : f.sender_id) || []
       
       const { data: profiles } = await supabase.from('profiles').select('*').neq('id', currentUserId).limit(100)
       const userList = document.getElementById('chatUserList')
@@ -563,18 +628,18 @@
 
       userList.innerHTML = ''
       for (const profile of profiles) {
-        const { data: unread } = await supabase.from('messages').select('id', { count: 'exact' }).eq('sender_id', profile.id).eq('receiver_id', currentUserId).is('seen_at', null)
+        const { data: unread } = await supabase.from('messages').select('id').eq('sender_id', profile.id).eq('receiver_id', currentUserId).is('seen_at', null)
         const unreadCount = unread?.length || 0
         const isFriend = friendIds.includes(profile.id)
         userList.innerHTML += `
           <div class="search-result" onclick="openChatWindow('${profile.id}', '${profile.name}', '${profile.avatar_url || 'https://via.placeholder.com/40'}')">
             <div style="position:relative;">
               <img src="${profile.avatar_url || 'https://via.placeholder.com/40'}" class="avatar" style="width:40px;height:40px;" />
-              ${unreadCount > 0? `<span class="unread-badge">${unreadCount}</span>` : ''}
+              ${unreadCount > 0 ? `<span class="unread-badge">${unreadCount}</span>` : ''}
             </div>
             <div style="flex:1;">
-              <div style="font-weight:bold;">${profile.name} ${profile.is_verified? '<span class="verified">✓</span>' : ''}</div>
-              <div style="font-size:12px;color:#65676b;">${isFriend? 'Friend' : 'Tap to message'}</div>
+              <div style="font-weight:bold;">${profile.name} ${profile.is_verified? '<span class="verified">✓</span>' : ''} ${isFriend ? '<span class="friend-tag">Friend</span>' : ''}</div>
+              <div style="font-size:12px;color:#65676b;">Tap to message</div>
             </div>
           </div>
         `
@@ -595,8 +660,8 @@
 
     async function loadMessages() {
       const { data: messages } = await supabase.from('messages').select('*')
-       .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${selectedChatUser.id}),and(sender_id.eq.${selectedChatUser.id},receiver_id.eq.${currentUserId})`)
-       .order('created_at', { ascending: true }).limit(1000)
+        .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${selectedChatUser.id}),and(sender_id.eq.${selectedChatUser.id},receiver_id.eq.${currentUserId})`)
+        .order('created_at', { ascending: true }).limit(1000)
       const messagesDiv = document.getElementById('chatMessages')
       messagesDiv.innerHTML = ''
       if (!messages || messages.length === 0) {
@@ -606,7 +671,7 @@
       messages.forEach(msg => {
         const isMine = msg.sender_id === currentUserId
         messagesDiv.innerHTML += `
-          <div class="message ${isMine? 'sent' : 'received'}">
+          <div class="message ${isMine ? 'sent' : 'received'}">
             <div class="message-bubble">
               <div>${msg.content}</div>
               <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('hi-IN', {hour: '2-digit', minute: '2-digit'})}</div>
@@ -620,7 +685,7 @@
     async function subscribeToMessages() {
       if (messageSubscription) messageSubscription.unsubscribe()
       messageSubscription = supabase.channel('messages')
-       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, (payload) => {
           if (payload.new.sender_id === selectedChatUser.id || payload.new.receiver_id === selectedChatUser.id) {
             loadMessages()
             markMessagesAsSeen(selectedChatUser.id)
@@ -630,12 +695,12 @@
 
     async function markMessagesAsSeen(senderId) {
       await supabase.from('messages').update({ seen_at: new Date().toISOString() })
-       .eq('sender_id', senderId).eq('receiver_id', currentUserId).is('seen_at', null)
+        .eq('sender_id', senderId).eq('receiver_id', currentUserId).is('seen_at', null)
     }
 
     async function checkUnreadMessages() {
       if (!currentUserId) return
-      const { data } = await supabase.from('messages').select('id', { count: 'exact' }).eq('receiver_id', currentUserId).is('seen_at', null)
+      const { data } = await supabase.from('messages').select('id').eq('receiver_id', currentUserId).is('seen_at', null)
       const badge = document.getElementById('chatUnreadBadge')
       if (data && data.length > 0) {
         badge.textContent = data.length
@@ -653,7 +718,7 @@
     async function sendDirectMessage() {
       const input = document.getElementById('chatMessageInput')
       const content = input.value.trim()
-      if (!content ||!selectedChatUser) return
+      if (!content || !selectedChatUser) return
       const { error } = await supabase.from('messages').insert({
         content: content,
         sender_id: currentUserId,
@@ -664,7 +729,8 @@
     }
 
     setInterval(checkUnreadMessages, 5000)
-        // ========== GROUP CHAT ==========
+
+    // ========== GROUP CHAT ==========
     window.openGroupList = () => {
       document.getElementById('groupListModal').classList.add('active')
       loadUserGroups()
@@ -679,9 +745,9 @@
 
     async function loadUserGroups() {
       const { data: groups } = await supabase
-       .from('group_members')
-       .select('groups(id, name, created_at)')
-       .eq('user_id', currentUserId)
+        .from('group_members')
+        .select('groups(id, name, created_at)')
+        .eq('user_id', currentUserId)
       
       const groupList = document.getElementById('groupList')
       if (!groups || groups.length === 0) {
@@ -693,11 +759,12 @@
       for (const g of groups) {
         const { count } = await supabase.from('group_members').select('*', { count: 'exact', head: true }).eq('group_id', g.groups.id)
         groupList.innerHTML += `
-          <div class="search-result" onclick="openGroupChat('${g.groups.id}', '${g.groups.name}')" style="padding:12px;border-bottom:1px solid #eee;cursor:pointer;">
+          <div class="search-result" onclick="openGroupChat('${g.groups.id}', '${g.groups.name}')" style="padding:12px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
             <div style="flex:1;">
               <div style="font-weight:bold;">👥 ${g.groups.name}</div>
               <div style="font-size:12px;color:#65676b;">${count}/250 members</div>
             </div>
+            <button class="btn-small btn-message" onclick="event.stopPropagation(); openGroupChat('${g.groups.id}', '${g.groups.name}')">💬</button>
           </div>
         `
       }
@@ -711,6 +778,7 @@
         await supabase.from('group_members').insert({ group_id: group.id, user_id: currentUserId })
         showAlert('Group ban gaya! Ab members add karo')
         loadUserGroups()
+        loadHomeGroups()
         openGroupChat(group.id, groupName)
       })
     }
@@ -728,10 +796,10 @@
 
     async function loadGroupMessages() {
       const { data: messages } = await supabase.from('messages')
-       .select('*, profiles:sender_id(name, avatar_url)')
-       .eq('group_id', selectedGroup.id)
-       .order('created_at', { ascending: true })
-       .limit(1000)
+        .select('*, profiles:sender_id(name, avatar_url)')
+        .eq('group_id', selectedGroup.id)
+        .order('created_at', { ascending: true })
+        .limit(1000)
       
       const messagesDiv = document.getElementById('groupMessages')
       messagesDiv.innerHTML = ''
@@ -742,8 +810,8 @@
       messages.forEach(msg => {
         const isMine = msg.sender_id === currentUserId
         messagesDiv.innerHTML += `
-          <div class="message ${isMine? 'sent' : 'received'}">
-            ${!isMine? `<div style="font-size:11px;color:#65676b;margin-bottom:2px;">${msg.profiles?.name || 'User'}</div>` : ''}
+          <div class="message ${isMine ? 'sent' : 'received'}">
+            ${!isMine ? `<div style="font-size:11px;color:#65676b;margin-bottom:2px;">${msg.profiles?.name || 'User'}</div>` : ''}
             <div class="message-bubble">
               <div>${msg.content}</div>
               <div class="message-time">${new Date(msg.created_at).toLocaleTimeString('hi-IN', {hour: '2-digit', minute: '2-digit'})}</div>
@@ -757,7 +825,7 @@
     async function subscribeToGroupMessages() {
       if (groupMessageSubscription) groupMessageSubscription.unsubscribe()
       groupMessageSubscription = supabase.channel('group-messages-' + selectedGroup.id)
-       .on('postgres_changes', { 
+        .on('postgres_changes', { 
           event: 'INSERT', 
           schema: 'public', 
           table: 'messages',
@@ -802,8 +870,7 @@
         }
       })
     }
-
-    // ========== AUTH STATE ==========
+        // ========== AUTH STATE ==========
     supabase.auth.onAuthStateChange((event, session) => {
       if (session) {
         document.getElementById('auth-form').style.display = 'none'
